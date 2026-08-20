@@ -394,13 +394,13 @@ html[data-theme="dark"] .toast{background:var(--surface-2);color:var(--ink);bord
 .pl-off{opacity:0;visibility:hidden;pointer-events:none}
 .pl-in{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px}
 .pl img{width:92px;height:auto;animation:plpulse 2.4s ease-in-out infinite}
+.pl-done .pl-fill{animation:none;transform:scaleX(1)}
 @keyframes plpulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.05);opacity:1}}
 .pl-name{font-family:'Fraunces',serif;font-size:21px;letter-spacing:-.01em;color:var(--ink)}
 .pl-slogan{margin-top:5px;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint)}
 .pl-bar{width:170px;height:3px;border-radius:3px;background:var(--line);overflow:hidden}
 .pl-fill{display:block;height:100%;width:100%;transform:scaleX(0);transform-origin:0 50%;
   background:linear-gradient(90deg,var(--violet),var(--blush));transition:transform .3s var(--ease)}
-.pl-pct{font-size:10.5px;letter-spacing:.14em;color:var(--faint)}
 body.pl-lock{overflow:hidden}
 @media (prefers-reduced-motion:reduce){ .pl img{animation:none} }
 

@@ -508,51 +508,12 @@ document.addEventListener("cm:currency", function(){
    than a flash of unstyled text and half-painted art. Capped so it can never
    trap someone on a bad connection.
    ========================================================================== */
-CM.preload = function(){
-  var box = CM.$("#cmload");
-  if(!box) return;
-  var fill = CM.$(".pl-fill", box), pctEl = CM.$(".pl-pct", box);
-  var shown = 0, done = false, CAP = 5000, started = Date.now();
-
-  function paint(p){
-    p = Math.max(shown, Math.min(100, p));
-    shown = p;
-    if(fill) fill.style.transform = "scaleX(" + (p/100) + ")";
-    if(pctEl) pctEl.textContent = Math.round(p) + "%";
-  }
-  function finish(){
-    if(done) return;
-    done = true;
-    paint(100);
-    setTimeout(function(){
-      box.classList.add("pl-off");
-      document.body.classList.remove("pl-lock");
-      setTimeout(function(){ if(box.parentNode) box.parentNode.removeChild(box); }, 700);
-    }, 220);
-  }
-
-  /* everything that must be ready before we reveal the page */
-  var imgs = CM.$$("img").filter(function(i){ return i.loading !== "lazy"; });
-  var total = imgs.length + 1;                     // +1 for the fonts
-  var ready = 0;
-  function tick(){ ready++; paint(ready / total * 100); if(ready >= total) finish(); }
-
-  imgs.forEach(function(i){
-    if(i.complete && i.naturalWidth > 0) return tick();
-    i.addEventListener("load", tick, {once:true});
-    i.addEventListener("error", tick, {once:true});
-  });
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(tick).catch(tick);
-  else tick();
-
-  /* always creep forward so it never looks stuck, and never hold past the cap */
-  var creep = setInterval(function(){
-    var t = (Date.now() - started) / CAP;
-    paint(Math.min(96, Math.max(shown, t * 90)));
-    if(done || t >= 1){ clearInterval(creep); finish(); }
-  }, 90);
-
-  addEventListener("load", function(){ setTimeout(finish, 60); });
+/* The preloader runs from an inline script at the top of each page so it starts
+   the moment the body is parsed, rather than waiting for this file at the end of
+   the document. All that is left here is to close it once the page is wired up. */
+CM.preload = function(){};                       /* the inline script owns it */
+CM.preloadDone = function(){
+  if(window.CMload && typeof window.CMload.finish === "function") window.CMload.finish();
 };
 
 /* ---------- boot ---------- */
@@ -563,6 +524,7 @@ CM.boot = function(fn){
     CM.mountChrome();
     if(fn) fn();
     CM.scroll.mount();
+    CM.preloadDone();
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",go);
   else go();

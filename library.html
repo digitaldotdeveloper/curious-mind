@@ -12,21 +12,40 @@
 <meta property="og:title" content="My library — Curious Mind">
 <meta property="og:description" content="Every book you own, DRM-free and yours to keep.">
 <meta property="og:url" content="https://digitaldotdeveloper.github.io/curious-mind/library.html">
-<meta property="og:image" content="https://digitaldotdeveloper.github.io/curious-mind/assets/og.jpg">
+<meta property="og:image" content="https://digitaldotdeveloper.github.io/curious-mind/assets/og.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Curious Mind — a lightbulb pouring out books, mountains, a whale and a hot-air balloon">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="My library — Curious Mind">
 <meta name="twitter:description" content="Every book you own, DRM-free and yours to keep.">
-<meta name="twitter:image" content="https://digitaldotdeveloper.github.io/curious-mind/assets/og.jpg">
+<meta name="twitter:image" content="https://digitaldotdeveloper.github.io/curious-mind/assets/og.jpg?v=2">
 <link rel="canonical" href="https://digitaldotdeveloper.github.io/curious-mind/library.html">
+<style>
+.pl{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  background:#FFFBFE;transition:opacity .5s cubic-bezier(.22,1,.36,1),visibility .5s}
+.pl-off{opacity:0;visibility:hidden;pointer-events:none}
+.pl-in{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px}
+.pl img{width:92px;height:auto}
+.pl-name{font-family:Georgia,'Times New Roman',serif;font-size:21px;color:#312d3b}
+.pl-slogan{margin-top:5px;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:#7A7D7D}
+.pl-bar{width:170px;height:3px;border-radius:3px;background:rgba(151,133,185,.22);overflow:hidden}
+.pl-fill{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);
+  background:linear-gradient(90deg,#9785B9,#F8BBD7);animation:plload 5s cubic-bezier(.15,.85,.25,1) forwards}
+@keyframes plload{0%{transform:scaleX(.04)}55%{transform:scaleX(.72)}100%{transform:scaleX(.94)}}
+.pl-done .pl-fill{animation:none;transform:scaleX(1);transition:transform .25s ease-out}
+body.pl-lock{overflow:hidden}
+@media (prefers-color-scheme:dark){
+  .pl{background:#15131c}.pl-name{color:#f3effa}.pl-slogan{color:#8f8a9c}
+}
+@media (prefers-reduced-motion:reduce){.pl-fill{animation:none;transform:scaleX(.9)}}
+</style>
 <link rel="icon" href="assets/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/pages.css">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="assets/curious.min.css">
 </head>
 <body class="pl-lock">
 <div class="pl" id="cmload" role="status" aria-label="Loading Curious Mind">
@@ -37,9 +56,38 @@
       <div class="pl-slogan">Stories today. Ideas forever.</div>
     </div>
     <div class="pl-bar"><i class="pl-fill"></i></div>
-    <div class="pl-pct">0%</div>
   </div>
 </div>
+<script>
+(function(){
+  var box=document.getElementById('cmload'); if(!box) return;
+  var done=false;
+  function finish(){
+    if(done) return; done=true;
+    box.classList.add('pl-done');
+    setTimeout(function(){
+      box.classList.add('pl-off');
+      document.body.classList.remove('pl-lock');
+      setTimeout(function(){ if(box.parentNode) box.parentNode.removeChild(box); },600);
+    },180);
+  }
+  window.CMload={finish:finish};
+  var imgs=[].slice.call(document.images).filter(function(i){ return i.loading!=='lazy'; });
+  var left=imgs.length+1;
+  function tick(){ if(--left<=0) finish(); }
+  imgs.forEach(function(i){
+    if(i.complete && i.naturalWidth>0) return tick();
+    i.addEventListener('load',tick,{once:true});
+    i.addEventListener('error',tick,{once:true});
+  });
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(tick)['catch'](tick); else tick();
+  window.addEventListener('load',function(){ setTimeout(finish,60); });
+  var since=(performance&&performance.now)?performance.now():0;
+  setTimeout(finish, Math.max(600, 5000-since));   /* from navigation, so a slow
+     start does not extend the wait — nothing may ever trap the reader */
+})();
+</script>
+<noscript><style>.pl{display:none}body.pl-lock{overflow:auto}</style></noscript>
 
 <a class="skip" href="#main">Skip to content</a>
 <main id="main" class="shell" style="min-height:60vh"></main>
