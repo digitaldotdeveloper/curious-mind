@@ -1,0 +1,176 @@
+{
+ "canvas": [
+  1024,
+  572
+ ],
+ "layers": [
+  {
+   "name": "obj01",
+   "file": "assets/scenes/shelf/obj01.webp",
+   "left": 25.781,
+   "top": 36.364,
+   "width": 48.438,
+   "px": [
+    264,
+    208,
+    496,
+    142
+   ],
+   "area": 64630
+  },
+  {
+   "name": "obj02",
+   "file": "assets/scenes/shelf/obj02.webp",
+   "left": 63.574,
+   "top": 7.168,
+   "width": 20.801,
+   "px": [
+    651,
+    41,
+    213,
+    151
+   ],
+   "area": 18467
+  },
+  {
+   "name": "obj03",
+   "file": "assets/scenes/shelf/obj03.webp",
+   "left": 8.887,
+   "top": 60.839,
+   "width": 16.602,
+   "px": [
+    91,
+    348,
+    170,
+    156
+   ],
+   "area": 16887
+  },
+  {
+   "name": "obj04",
+   "file": "assets/scenes/shelf/obj04.webp",
+   "left": 77.637,
+   "top": 67.133,
+   "width": 15.918,
+   "px": [
+    795,
+    384,
+    163,
+    144
+   ],
+   "area": 14493
+  },
+  {
+   "name": "obj05",
+   "file": "assets/scenes/shelf/obj05.webp",
+   "left": 13.379,
+   "top": 6.993,
+   "width": 15.527,
+   "px": [
+    137,
+    40,
+    159,
+    159
+   ],
+   "area": 14405
+  },
+  {
+   "name": "obj06",
+   "file": "assets/scenes/shelf/obj06.webp",
+   "left": 80.469,
+   "top": 36.364,
+   "width": 14.844,
+   "px": [
+    824,
+    208,
+    152,
+    137
+   ],
+   "area": 11286
+  },
+  {
+   "name": "obj07",
+   "file": "assets/scenes/shelf/obj07.webp",
+   "left": 35.156,
+   "top": 68.531,
+   "width": 13.281,
+   "px": [
+    360,
+    392,
+    136,
+    136
+   ],
+   "area": 10737
+  },
+  {
+   "name": "obj08",
+   "file": "assets/scenes/shelf/obj08.webp",
+   "left": 62.5,
+   "top": 67.133,
+   "width": 10.059,
+   "px": [
+    640,
+    384,
+    103,
+    143
+   ],
+   "area": 5207
+  },
+  {
+   "name": "obj09",
+   "file": "assets/scenes/shelf/obj09.webp",
+   "left": 37.988,
+   "top": 12.587,
+   "width": 13.379,
+   "px": [
+    389,
+    72,
+    137,
+    79
+   ],
+   "area": 4209
+  },
+  {
+   "name": "obj10",
+   "file": "assets/scenes/shelf/obj10.webp",
+   "left": 4.785,
+   "top": 29.371,
+   "width": 8.594,
+   "px": [
+    49,
+    168,
+    88,
+    88
+   ],
+   "area": 3808
+  },
+  {
+   "name": "obj11",
+   "file": "assets/scenes/shelf/obj11.webp",
+   "left": 50.781,
+   "top": 67.308,
+   "width": 9.277,
+   "px": [
+    520,
+    385,
+    95,
+    64
+   ],
+   "area": 3197
+  },
+  {
+   "name": "dust",
+   "file": "assets/scenes/shelf/dust.webp",
+   "left": 4.688,
+   "top": 8.741,
+   "width": 90.625,
+   "px": [
+    48,
+    50,
+    928,
+    486
+   ],
+   "area": 12875
+  }
+ ]
+}

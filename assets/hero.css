@@ -120,7 +120,12 @@ html[data-theme="dark"] .hero-layers img{filter:drop-shadow(0 18px 26px rgba(0,0
   66%{transform:translate3d(-8px,10px,0) scale(.95)}
 }
 
-/* ---- slide 2: coverflow ---- */
+/* ---- the generated scenes, laid out like the slide 1 illustration ---- */
+.hero-layers.scene-shelf{aspect-ratio:1024 / 572}
+.hero-layers.scene-chapter{aspect-ratio:1024 / 572}
+.hero-layers.scene-shelf,.hero-layers.scene-chapter{width:min(100%,760px)}
+
+/* ---- slide 2: coverflow (retired — kept for the shop page) ---- */
 .h3-flow{position:relative;height:100%;transform-style:preserve-3d;cursor:grab;touch-action:pan-y;
   user-select:none;-webkit-user-select:none}
 .h3-flow.dragging{cursor:grabbing}
@@ -206,37 +211,69 @@ html[data-theme="dark"] .h3-dots button[aria-current="true"]{background:var(--vi
 
 /* ---- responsive ---- */
 @media(max-width:900px){
-  .hero3d{perspective:1000px;padding-inline:clamp(14px,5vw,28px);overflow:visible}
-  /* slides stay absolutely positioned, so the viewport needs its own height */
-  .hero3d .h3-viewport{height:auto;min-height:clamp(548px,82vh,700px)}
+  .hero3d{perspective:none;padding-inline:0;overflow:visible;min-height:0;margin-top:4px}
+  .hero3d .h3-viewport{height:auto;min-height:0;width:100%}
+
+  /* On a phone the slides stack in normal flow — no absolute positioning, no
+     3D, no transform juggling. Only the live one is in the document. */
   .h3-slide{
-    grid-template-columns:1fr;
-    grid-template-rows:minmax(200px,42%) auto;
-    gap:14px;text-align:center;align-content:center;
+    position:static;display:flex;flex-direction:column;transform:none!important;
+    opacity:1!important;transition:none;text-align:center;
+    padding:6px clamp(16px,5vw,28px) 0;
   }
-  .h3-slide .h3-art{order:-1;height:100%;min-height:190px}
+  .h3-slide .h3-art{order:-1}          /* artwork first, as on the phone mockup */
+  .h3-slide:not(.on){display:none}
+  .h3-slide .h3-art{height:auto;margin-bottom:20px;min-height:200px;
+    display:flex;align-items:center;justify-content:center}
+  .h3-slide .h3-copy{transform:none}
+
   .h3-copy h2{font-size:clamp(34px,10vw,50px)}
   .h3-copy .eyebrow{margin-bottom:10px}
-  .h3-copy p.sub{margin:0 auto 20px;font-size:16px}
+  .h3-copy p.sub{margin:0 auto 20px;font-size:16px;max-width:40ch}
   .h3-copy .h3-cta{justify-content:center}
+
+  /* the illustration keeps its layers but sits in flow */
+  .hero-layers{position:relative;top:auto;left:auto;transform:none;width:100%;
+    max-height:none;margin-inline:auto}
   .artimg{max-height:100%;max-width:92%}
+  .dlayer{position:absolute}
 
-  .h3-arw{top:26%;width:44px;height:44px}
-  .h3-arw.p{left:2px}
-  .h3-arw.n{right:2px}
+  /* arrows sit at the edges beside the artwork, as in the phone mockup */
+  .h3-arw{position:absolute;top:150px;transform:translateY(-50%);width:44px;height:44px;z-index:40}
+  .h3-arw.p{left:6px}
+  .h3-arw.n{right:6px}
+  .h3-arw:hover{transform:translateY(-50%)}
 
-  .h3-foot{position:static;left:auto;transform:none;width:100%;
-    justify-content:center;margin-top:24px;gap:14px 16px;flex-wrap:wrap}
-  .h3-pill{margin-left:0;flex:0 0 100%;max-width:420px;margin-inline:auto}
+  .h3-foot{position:static;transform:none;width:100%;justify-content:center;
+    margin-top:20px;gap:14px;flex-wrap:wrap}
+  .h3-pill{margin-left:0;flex:0 0 100%;max-width:420px;margin-inline:auto;order:5}
+  .h3-play{order:4}
 
-  .book3d{width:clamp(120px,30vw,168px)}
-  .fslide{width:clamp(92px,23vw,126px)}
-  .flowcaption{bottom:-6px}
+  /* ---- slide 2 on touch: a native snap-scrolling shelf ----
+     A 3D coverflow driven by rAF is the wrong tool on a phone — this is one
+     scroller the OS animates itself, so it is smooth and costs nothing. */
+  .h3-flow{height:auto;transform-style:flat;display:flex;gap:14px;overflow-x:auto;
+    scroll-snap-type:x mandatory;scroll-padding-inline:calc(50% - 66px);
+    padding:6px calc(50% - 66px) 12px;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;cursor:default}
+  .h3-flow::-webkit-scrollbar{display:none}
+  .h3-flow .flowtrack{display:contents}
+  .fslide{position:static;width:132px;flex:0 0 132px;transform:none!important;
+    opacity:1!important;filter:none!important;transition:none;scroll-snap-align:center}
+  .fslide .cover-link{display:block}
+  .fslide .fs-cap{display:block;margin-top:9px;text-align:center}
+  .fslide .fs-cap b{display:block;font-family:'Fraunces',serif;font-weight:500;font-size:13.5px;
+    line-height:1.2;color:var(--ink)}
+  .fslide .fs-cap span{font-size:11.5px;color:var(--muted)}
+  .flowcaption{display:none}
+
+  .book3d{width:clamp(140px,38vw,190px);margin-inline:auto}
 }
 @media(max-width:420px){
-  .hero3d .h3-viewport{min-height:520px}
   .h3-copy h2{font-size:clamp(30px,9vw,40px)}
   .h3-copy p.sub{font-size:15px;margin-bottom:16px}
+  .fslide{width:118px;flex-basis:118px}
+  .h3-flow{scroll-padding-inline:calc(50% - 59px);padding-inline:calc(50% - 59px)}
 }
 @media(max-height:760px) and (min-width:901px){
   .hero3d,.hero3d .h3-viewport{min-height:0;height:clamp(430px,64vh,520px)}

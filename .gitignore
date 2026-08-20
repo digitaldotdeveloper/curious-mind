@@ -8,3 +8,6 @@ Thumbs.db
 
 # local studio auth token — never commit (public repo)
 tools/.token
+
+# raw generated scenes — the shipped layers are in assets/scenes
+tools/.scenes-raw/

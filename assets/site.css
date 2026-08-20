@@ -156,7 +156,11 @@ html[data-theme="dark"] .badge{color:#1b1725}
 .dpanel .dhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .dpanel a{padding:14px 12px;border-radius:var(--r-sm);font-size:17px;color:var(--ink);transition:background .25s}
 .dpanel a:hover,.dpanel a[aria-current="page"]{background:var(--violet-soft)}
-.dpanel .dfoot{margin-top:auto;padding-top:18px;border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+.dpanel .drow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px;border-radius:var(--r-sm);font-size:15px;color:var(--muted)}
+.dpanel .drow .cursel{padding:8px 30px 8px 12px}
+.dpanel .dfoot{margin-top:auto;padding-top:18px;border-top:1px solid var(--line);color:var(--faint);
+  font-size:12.5px;line-height:1.6}
 
 /* ---------- buttons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 24px;border-radius:var(--r-pill);
@@ -379,4 +383,58 @@ html[data-theme="dark"] .toast{background:var(--surface-2);color:var(--ink);bord
     transition-duration:.01ms!important;scroll-behavior:auto!important}
   .reveal,[data-fx]{opacity:1!important;transform:none!important}
   .scrollbar-fx{display:none}
+}
+
+
+/* ==========================================================================
+   Preloader
+   ========================================================================== */
+.pl{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--paper);
+  transition:opacity .5s var(--ease),visibility .5s}
+.pl-off{opacity:0;visibility:hidden;pointer-events:none}
+.pl-in{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px}
+.pl img{width:92px;height:auto;animation:plpulse 2.4s ease-in-out infinite}
+@keyframes plpulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.05);opacity:1}}
+.pl-name{font-family:'Fraunces',serif;font-size:21px;letter-spacing:-.01em;color:var(--ink)}
+.pl-slogan{margin-top:5px;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint)}
+.pl-bar{width:170px;height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.pl-fill{display:block;height:100%;width:100%;transform:scaleX(0);transform-origin:0 50%;
+  background:linear-gradient(90deg,var(--violet),var(--blush));transition:transform .3s var(--ease)}
+.pl-pct{font-size:10.5px;letter-spacing:.14em;color:var(--faint)}
+body.pl-lock{overflow:hidden}
+@media (prefers-reduced-motion:reduce){ .pl img{animation:none} }
+
+/* ==========================================================================
+   Phones: cut the per-frame paint work.
+   Live blur, blend modes and backdrop-filter are what made the theme toggle
+   crawl — switching themes repaints every one of those layers at once.
+   ========================================================================== */
+@media (max-width:900px), (pointer:coarse){
+  /* soft-edged gradients instead of live blur filters */
+  .aura b{filter:none;opacity:.55}
+  .aura .a1{background:radial-gradient(closest-side,var(--blush),transparent 72%)}
+  .aura .a2{background:radial-gradient(closest-side,var(--violet),transparent 72%)}
+  .aura .a3{background:radial-gradient(closest-side,#cfe9e2,transparent 72%)}
+  html[data-theme="dark"] .aura .a3{background:radial-gradient(closest-side,#3b6f66,transparent 72%)}
+
+  /* a full-viewport blend layer is repainted on every scroll and theme change */
+  .grain{display:none}
+
+  /* backdrop-filter on a sticky bar is the most expensive thing on a phone */
+  .site-header{backdrop-filter:none;background:var(--paper)}
+  .drawer .dscrim{backdrop-filter:none}
+  .rbar{backdrop-filter:none;background:var(--paper)}
+  .arw,.h3-arw{backdrop-filter:none}
+
+  /* per-frame drop-shadow filters on moving artwork */
+  .hero-layers img,
+  html[data-theme="dark"] .hero-layers img,
+  .hero-layers .hl-scene img,
+  .hero-layers .hl-bulb img{filter:none}
+
+  /* theme switching should be instant, not a 400ms repaint of the document */
+  body{transition:none}
+
+  /* fewer promoted layers means less GPU memory pressure */
+  .hero-layers .hl-item,[data-par],.aura b,.h3-slide{will-change:auto}
 }

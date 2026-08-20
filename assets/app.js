@@ -278,7 +278,17 @@ CM.mountChrome = function(){
     '<div class="dhead"><span class="kicker">Menu</span><button class="iconbtn" data-dclose aria-label="Close menu">'+ICON.x+'</button></div>'+
     NAV.map(function(n){ return '<a href="'+n.href+'"'+(n.href===page?' aria-current="page"':'')+'>'+n.label+'</a>'; }).join("")+
     '<a href="cart.html">Your bag</a>'+
-    '<div class="dfoot">DRM-free EPUB &amp; PDF · delivered instantly worldwide</div>'+
+    '<a href="shop.html?view=saved">Saved for later</a>'+
+    /* the header hides these on small screens, so the drawer has to carry them */
+    '<div class="drow"><span>Currency</span>'+
+      '<label class="sr" for="curSelM">Currency</label>'+
+      '<select id="curSelM" class="cursel">'+
+      Object.keys(CURRENCIES).map(function(k){
+        return '<option value="'+k+'"'+(k===CM.currency()?" selected":"")+'>'+k+' · '+CURRENCIES[k].sym+'</option>';
+      }).join("")+'</select></div>'+
+    '<div class="drow"><span>Appearance</span>'+
+      '<button class="btn btn-quiet btn-sm" id="themeBtnM">Switch theme</button></div>'+
+    '<div class="dfoot">Stories today. Ideas forever.<br>DRM-free EPUB &amp; PDF &middot; delivered instantly worldwide</div>'+
   '</div>';
   document.body.appendChild(drawer);
 
@@ -310,6 +320,13 @@ CM.mountChrome = function(){
   function closeD(){ drawer.classList.remove("on"); burger.setAttribute("aria-expanded","false");
     document.body.style.overflow=""; burger.focus(); }
   burger.addEventListener("click", openD);
+  var curM = $("#curSelM");
+  if(curM) curM.addEventListener("change", function(){
+    CM.setCurrency(this.value);
+    var top = $("#curSel"); if(top) top.value = this.value;
+  });
+  var themeM = $("#themeBtnM");
+  if(themeM) themeM.addEventListener("click", CM.toggleTheme);
   drawer.addEventListener("click", function(e){ if(e.target.closest("[data-dclose]")) closeD(); });
   document.addEventListener("keydown", function(e){ if(e.key==="Escape" && drawer.classList.contains("on")) closeD(); });
 
@@ -349,6 +366,9 @@ CM.mountAmbient = function(){
    ========================================================================== */
 CM.scroll = (function(){
   var reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  /* Parallax is a per-scroll-frame cost for a effect nobody can point at on a
+     phone, so it is desktop-only. Reveals still run everywhere. */
+  var noPar = reduce || !matchMedia("(pointer:fine)").matches || innerWidth < 900;
   var io = null, parallax = [], raf = null, bar = null;
 
   /* which elements animate, and how, when nothing is specified */
@@ -425,6 +445,7 @@ CM.scroll = (function(){
 
   /* --- parallax: data-par="0.18" moves the element against the scroll --- */
   function collectParallax(root){
+    if(noPar) return;
     CM.$$("[data-par]:not([data-par-seen])", root || document).forEach(function(el){
       el.setAttribute("data-par-seen","");
       parallax.push({ el: el, k: parseFloat(el.getAttribute("data-par")) || 0.12 });
@@ -481,9 +502,63 @@ document.addEventListener("cm:currency", function(){
   document.dispatchEvent(new CustomEvent("cm:repaint"));
 });
 
+/* ==========================================================================
+   Preloader — hold the page until the fonts and the above-the-fold images are
+   actually ready, so the first thing anyone sees is the finished design rather
+   than a flash of unstyled text and half-painted art. Capped so it can never
+   trap someone on a bad connection.
+   ========================================================================== */
+CM.preload = function(){
+  var box = CM.$("#cmload");
+  if(!box) return;
+  var fill = CM.$(".pl-fill", box), pctEl = CM.$(".pl-pct", box);
+  var shown = 0, done = false, CAP = 5000, started = Date.now();
+
+  function paint(p){
+    p = Math.max(shown, Math.min(100, p));
+    shown = p;
+    if(fill) fill.style.transform = "scaleX(" + (p/100) + ")";
+    if(pctEl) pctEl.textContent = Math.round(p) + "%";
+  }
+  function finish(){
+    if(done) return;
+    done = true;
+    paint(100);
+    setTimeout(function(){
+      box.classList.add("pl-off");
+      document.body.classList.remove("pl-lock");
+      setTimeout(function(){ if(box.parentNode) box.parentNode.removeChild(box); }, 700);
+    }, 220);
+  }
+
+  /* everything that must be ready before we reveal the page */
+  var imgs = CM.$$("img").filter(function(i){ return i.loading !== "lazy"; });
+  var total = imgs.length + 1;                     // +1 for the fonts
+  var ready = 0;
+  function tick(){ ready++; paint(ready / total * 100); if(ready >= total) finish(); }
+
+  imgs.forEach(function(i){
+    if(i.complete && i.naturalWidth > 0) return tick();
+    i.addEventListener("load", tick, {once:true});
+    i.addEventListener("error", tick, {once:true});
+  });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(tick).catch(tick);
+  else tick();
+
+  /* always creep forward so it never looks stuck, and never hold past the cap */
+  var creep = setInterval(function(){
+    var t = (Date.now() - started) / CAP;
+    paint(Math.min(96, Math.max(shown, t * 90)));
+    if(done || t >= 1){ clearInterval(creep); finish(); }
+  }, 90);
+
+  addEventListener("load", function(){ setTimeout(finish, 60); });
+};
+
 /* ---------- boot ---------- */
 CM.boot = function(fn){
   function go(){
+    CM.preload();
     CM.mountAmbient();
     CM.mountChrome();
     if(fn) fn();

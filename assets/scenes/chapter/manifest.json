@@ -1,0 +1,134 @@
+{
+ "canvas": [
+  1024,
+  572
+ ],
+ "layers": [
+  {
+   "name": "obj01",
+   "file": "assets/scenes/chapter/obj01.webp",
+   "left": 10.938,
+   "top": 59.091,
+   "width": 85.059,
+   "px": [
+    112,
+    338,
+    871,
+    222
+   ],
+   "area": 57449
+  },
+  {
+   "name": "obj02",
+   "file": "assets/scenes/chapter/obj02.webp",
+   "left": 44.531,
+   "top": 33.566,
+   "width": 18.75,
+   "px": [
+    456,
+    192,
+    192,
+    128
+   ],
+   "area": 10918
+  },
+  {
+   "name": "obj03",
+   "file": "assets/scenes/chapter/obj03.webp",
+   "left": 22.266,
+   "top": 22.028,
+   "width": 12.891,
+   "px": [
+    228,
+    126,
+    132,
+    194
+   ],
+   "area": 10769
+  },
+  {
+   "name": "obj04",
+   "file": "assets/scenes/chapter/obj04.webp",
+   "left": 39.844,
+   "top": 9.79,
+   "width": 16.504,
+   "px": [
+    408,
+    56,
+    169,
+    132
+   ],
+   "area": 8502
+  },
+  {
+   "name": "obj05",
+   "file": "assets/scenes/chapter/obj05.webp",
+   "left": 65.625,
+   "top": 39.685,
+   "width": 10.742,
+   "px": [
+    672,
+    227,
+    110,
+    109
+   ],
+   "area": 7711
+  },
+  {
+   "name": "obj06",
+   "file": "assets/scenes/chapter/obj06.webp",
+   "left": 37.5,
+   "top": 47.378,
+   "width": 11.523,
+   "px": [
+    384,
+    271,
+    118,
+    97
+   ],
+   "area": 4808
+  },
+  {
+   "name": "obj07",
+   "file": "assets/scenes/chapter/obj07.webp",
+   "left": 75.879,
+   "top": 25.699,
+   "width": 23.145,
+   "px": [
+    777,
+    147,
+    237,
+    80
+   ],
+   "area": 1209
+  },
+  {
+   "name": "obj08",
+   "file": "assets/scenes/chapter/obj08.webp",
+   "left": 69.141,
+   "top": 29.371,
+   "width": 4.98,
+   "px": [
+    708,
+    168,
+    51,
+    42
+   ],
+   "area": 1147
+  },
+  {
+   "name": "dust",
+   "file": "assets/scenes/chapter/dust.webp",
+   "left": 0.0,
+   "top": 4.196,
+   "width": 97.07,
+   "px": [
+    0,
+    24,
+    994,
+    548
+   ],
+   "area": 5262
+  }
+ ]
+}

@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Curious Mind — a quiet corner for ebooks</title>
 <meta name="description" content="A small ebook store for slow readers. Twelve hand-picked, DRM-free titles a month, delivered instantly worldwide.">
+<meta name="theme-color" content="#FFFBFE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15131c" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Curious Mind">
+<meta property="og:title" content="Curious Mind — a quiet corner for curious minds">
+<meta property="og:description" content="Stories today. Ideas forever. A small ebook shop: twelve hand-picked, DRM-free books a month, delivered instantly worldwide.">
+<meta property="og:url" content="https://digitaldotdeveloper.github.io/curious-mind/">
+<meta property="og:image" content="https://digitaldotdeveloper.github.io/curious-mind/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Curious Mind — a lightbulb pouring out books, mountains, a whale and a hot-air balloon">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Curious Mind — a quiet corner for curious minds">
+<meta name="twitter:description" content="Stories today. Ideas forever. A small ebook shop: twelve hand-picked, DRM-free books a month, delivered instantly worldwide.">
+<meta name="twitter:image" content="https://digitaldotdeveloper.github.io/curious-mind/assets/og.jpg">
+<link rel="canonical" href="https://digitaldotdeveloper.github.io/curious-mind/">
 <link rel="icon" href="assets/favicon.ico">
 <link rel="apple-touch-icon" href="assets/logo-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +32,19 @@
 <link rel="stylesheet" href="assets/pages.css">
 <link rel="stylesheet" href="assets/hero.css">
 </head>
-<body>
+<body class="pl-lock">
+<div class="pl" id="cmload" role="status" aria-label="Loading Curious Mind">
+  <div class="pl-in">
+    <img src="assets/logo.webp" alt="" width="92" height="96" fetchpriority="high">
+    <div>
+      <div class="pl-name">Curious Mind</div>
+      <div class="pl-slogan">Stories today. Ideas forever.</div>
+    </div>
+    <div class="pl-bar"><i class="pl-fill"></i></div>
+    <div class="pl-pct">0%</div>
+  </div>
+</div>
+
 <a class="skip" href="#main">Skip to content</a>
 
 <main id="main">
@@ -54,18 +82,28 @@
         <div class="h3-copy">
           <span class="eyebrow anim"><i></i> This month&rsquo;s shelf</span>
           <h2 class="anim"><span class="l1">Twelve books.</span><span class="l2">One shelf.</span><span class="l3">No algorithm.</span></h2>
-          <p class="sub anim">Spin the shelf and click any cover to open that book. If something goes on, something else comes off.</p>
+          <p class="sub anim">One shelf, twelve titles, chosen by a person. If something goes on, something else comes off — every cover below opens its own book.</p>
           <span class="h3-cta anim">
             <a class="btn btn-primary btn-lg" href="shop.html">Browse all twelve</a>
             <a class="btn btn-ghost" id="frontRead" href="shop.html">Read chapter one</a>
           </span>
         </div>
         <div class="h3-art">
-          <div class="dlayer" data-depth="0.2" style="transform:translateZ(-160px)"><span class="glowblob"></span></div>
-          <div class="h3-flow" id="flow" tabindex="0" role="group" aria-label="Book shelf — each cover opens that book">
-            <div class="flowtrack" id="flowtrack"></div>
+          <div class="dlayer" data-depth="0.22" style="transform:translateZ(-170px)"><span class="glowblob"></span></div>
+          <div class="hero-layers scene-shelf" role="img" aria-label="A floating bookshelf with books, an open book, a paper aeroplane, spectacles and a reading lamp drifting around it">
+            <span class="hl-item" style="left:25.781%;top:36.364%;width:48.438%;--z:-20px;--dur:13s;--dy:-6px;--dx:0px;--rot:0deg;--del:0.0s" data-depth="0.35" data-par="0.10"><img src="assets/scenes/shelf/obj01.webp" alt="" width="496" height="142" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:13.379%;top:6.993%;width:15.527%;--z:-94px;--dur:10.1s;--dy:-18px;--dx:14px;--rot:2.4deg;--del:0.5s" data-depth="0.49" data-par="0.23"><img src="assets/scenes/shelf/obj05.webp" alt="" width="159" height="159" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:63.574%;top:7.168%;width:20.801%;--z:-48px;--dur:11.7s;--dy:-15px;--dx:-12px;--rot:2.1deg;--del:0.9s" data-depth="0.63" data-par="0.20"><img src="assets/scenes/shelf/obj02.webp" alt="" width="213" height="151" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:37.988%;top:12.587%;width:13.379%;--z:-2px;--dur:13.3s;--dy:-25px;--dx:17px;--rot:-3.3deg;--del:1.4s" data-depth="0.77" data-par="0.31"><img src="assets/scenes/shelf/obj09.webp" alt="" width="137" height="79" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:4.785%;top:29.371%;width:8.594%;--z:44px;--dur:14.9s;--dy:-26px;--dx:-17px;--rot:3.3deg;--del:1.8s" data-depth="0.91" data-par="0.31"><img src="assets/scenes/shelf/obj10.webp" alt="" width="88" height="88" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:80.469%;top:36.364%;width:14.844%;--z:90px;--dur:8.5s;--dy:-20px;--dx:15px;--rot:2.7deg;--del:2.2s" data-depth="1.05" data-par="0.26"><img src="assets/scenes/shelf/obj06.webp" alt="" width="152" height="137" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:8.887%;top:60.839%;width:16.602%;--z:136px;--dur:10.1s;--dy:-16px;--dx:-13px;--rot:-2.2deg;--del:0.0s" data-depth="1.19" data-par="0.21"><img src="assets/scenes/shelf/obj03.webp" alt="" width="170" height="156" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:77.637%;top:67.133%;width:15.918%;--z:182px;--dur:11.7s;--dy:-18px;--dx:14px;--rot:2.4deg;--del:0.5s" data-depth="1.33" data-par="0.23"><img src="assets/scenes/shelf/obj04.webp" alt="" width="163" height="144" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:62.500%;top:67.133%;width:10.059%;--z:228px;--dur:13.3s;--dy:-25px;--dx:-17px;--rot:3.2deg;--del:0.9s" data-depth="1.47" data-par="0.30"><img src="assets/scenes/shelf/obj08.webp" alt="" width="103" height="143" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:50.781%;top:67.308%;width:9.277%;--z:274px;--dur:14.9s;--dy:-26px;--dx:17px;--rot:-3.3deg;--del:1.4s" data-depth="1.61" data-par="0.32"><img src="assets/scenes/shelf/obj11.webp" alt="" width="95" height="64" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:35.156%;top:68.531%;width:13.281%;--z:320px;--dur:8.5s;--dy:-21px;--dx:-15px;--rot:2.7deg;--del:1.8s" data-depth="1.75" data-par="0.26"><img src="assets/scenes/shelf/obj07.webp" alt="" width="136" height="136" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:4.688%;top:8.741%;width:90.625%;--z:70px;--dur:12s;--dy:-10px;--dx:5px;--rot:0deg;--del:2.2s" data-depth="1.89" data-par="0.22"><img src="assets/scenes/shelf/dust.webp" alt="" width="928" height="486" loading="lazy" decoding="async"></span>
           </div>
-          <div class="flowcaption" id="flowcap"><span class="sw"><b></b><span></span></span></div>
         </div>
       </article>
 
@@ -81,30 +119,17 @@
           </span>
         </div>
         <div class="h3-art">
-          <div class="dlayer" data-depth="0.2" style="transform:translateZ(-150px)"><span class="glowblob"></span></div>
-          <div class="dlayer" data-depth="0.7" style="transform:translateZ(-10px)">
-            <div class="book3d" aria-hidden="true">
-              <span class="bk-spine"></span>
-              <div class="bk-page">
-                <div class="pk">Chapter one &mdash; free</div>
-                <div class="ph2">The Room With No Clock</div>
-                <div class="cap">T</div>
-                <div class="ln"></div><div class="ln"></div><div class="ln"></div>
-                <div class="ln"></div><div class="ln"></div><div class="ln s"></div>
-                <div class="ln" style="margin-top:10px"></div><div class="ln"></div>
-                <div class="ln"></div><div class="ln s"></div>
-              </div>
-              <div class="bk-cover">
-                <span class="cf" id="book3dFront"></span>
-                <span class="cb"></span>
-              </div>
-            </div>
-          </div>
-          <div class="dlayer sparks" data-depth="1.1" style="transform:translateZ(80px)" aria-hidden="true">
-            <i class="star" style="left:16%;top:20%;--sz:14px;--dur:10s">&#10022;</i>
-            <i class="star" style="left:78%;top:26%;--sz:11px;--dur:12s;--del:1s">&#10022;</i>
-            <i style="left:24%;top:70%;width:7px;height:7px;--dur:12s;background:var(--blush)"></i>
-            <i class="ring" style="left:74%;top:64%;width:22px;height:22px;--dur:13s;--del:.5s"></i>
+          <div class="dlayer" data-depth="0.22" style="transform:translateZ(-170px)"><span class="glowblob"></span></div>
+          <div class="hero-layers scene-chapter" role="img" aria-label="An open book with a lighthouse, a whale, a paper boat, a small house, birds and a crescent moon rising out of it">
+            <span class="hl-item" style="left:10.938%;top:59.091%;width:85.059%;--z:-20px;--dur:13s;--dy:-6px;--dx:0px;--rot:0deg;--del:0.0s" data-depth="0.35" data-par="0.10"><img src="assets/scenes/chapter/obj01.webp" alt="" width="871" height="222" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:39.844%;top:9.790%;width:16.504%;--z:-94px;--dur:10.1s;--dy:-21px;--dx:15px;--rot:2.8deg;--del:0.5s" data-depth="0.49" data-par="0.27"><img src="assets/scenes/chapter/obj04.webp" alt="" width="169" height="132" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:22.266%;top:22.028%;width:12.891%;--z:-48px;--dur:11.7s;--dy:-20px;--dx:-14px;--rot:2.6deg;--del:0.9s" data-depth="0.63" data-par="0.25"><img src="assets/scenes/chapter/obj03.webp" alt="" width="132" height="194" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:75.879%;top:25.699%;width:23.145%;--z:-2px;--dur:13.3s;--dy:-27px;--dx:18px;--rot:-3.5deg;--del:1.4s" data-depth="0.77" data-par="0.33"><img src="assets/scenes/chapter/obj07.webp" alt="" width="237" height="80" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:69.141%;top:29.371%;width:4.980%;--z:44px;--dur:14.9s;--dy:-28px;--dx:-18px;--rot:3.5deg;--del:1.8s" data-depth="0.91" data-par="0.33"><img src="assets/scenes/chapter/obj08.webp" alt="" width="51" height="42" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:44.531%;top:33.566%;width:18.750%;--z:90px;--dur:8.5s;--dy:-19px;--dx:14px;--rot:2.6deg;--del:2.2s" data-depth="1.05" data-par="0.25"><img src="assets/scenes/chapter/obj02.webp" alt="" width="192" height="128" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:65.625%;top:39.685%;width:10.742%;--z:136px;--dur:10.1s;--dy:-22px;--dx:-16px;--rot:-2.9deg;--del:0.0s" data-depth="1.19" data-par="0.28"><img src="assets/scenes/chapter/obj05.webp" alt="" width="110" height="109" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:37.500%;top:47.378%;width:11.523%;--z:182px;--dur:11.7s;--dy:-24px;--dx:17px;--rot:3.2deg;--del:0.5s" data-depth="1.33" data-par="0.30"><img src="assets/scenes/chapter/obj06.webp" alt="" width="118" height="97" loading="lazy" decoding="async"></span>
+            <span class="hl-item" style="left:0.000%;top:4.196%;width:97.070%;--z:70px;--dur:12s;--dy:-10px;--dx:5px;--rot:0deg;--del:0.9s" data-depth="1.47" data-par="0.22"><img src="assets/scenes/chapter/dust.webp" alt="" width="994" height="548" loading="lazy" decoding="async"></span>
           </div>
         </div>
       </article>
@@ -215,7 +240,19 @@ CM.boot(function(){
       d.setAttribute("aria-current", i===cur?"true":"false");
     });
   }
-  function show(i){ cur=((i%NS)+NS)%NS; layout(); }
+  var heroMQ = matchMedia("(max-width:900px)");
+  function show(i){
+    cur=((i%NS)+NS)%NS;
+    layout();
+    /* On phones only the live slide is in the layout, so swapping to a shorter
+       one leaves the page scrolled past the headline. Pull the hero back up. */
+    if(heroMQ.matches){
+      var hdr = document.querySelector(".site-header");
+      var off = (hdr ? hdr.getBoundingClientRect().height : 0) + 10;
+      var top = hero.getBoundingClientRect().top + scrollY - off;
+      if(scrollY > top) scrollTo({top:Math.max(0,top), behavior:"smooth"});
+    }
+  }
   function next(){ show(cur+1); }
   function prev(){ show(cur-1); }
 
@@ -260,7 +297,7 @@ CM.boot(function(){
   });
 
   /* pointer parallax — each .dlayer moves by its own depth, in real 3D */
-  if(!reduce){
+  if(!reduce && matchMedia("(pointer:fine)").matches){
     var tx=0, ty=0, cx=0, cy=0, raf=null;
     var layers=CM.$$(".dlayer,.hl-item",hero).map(function(l){
       var m=/translateZ\((-?[\d.]+)px\)/.exec(l.style.transform||"");
@@ -290,113 +327,17 @@ CM.boot(function(){
     hero.addEventListener("pointerleave",function(){ tx=0; ty=0; if(!raf) raf=requestAnimationFrame(tick); });
   }
 
-  /* ---------- slide 2: the 3D shelf ---------- */
-  var BOOKS = CATALOGUE.filter(function(b){ return b.featured; })
-    .concat(CATALOGUE.filter(function(b){ return !b.featured; })).slice(0,8);
-  var flow=CM.$("#flow"), ftrack=CM.$("#flowtrack"), cap=CM.$("#flowcap"), N=BOOKS.length;
-
-  BOOKS.forEach(function(b){
-    var s=CM.el("article","fslide");
-    s.innerHTML='<a class="cover-link" href="book.html?id='+b.id+'" aria-label="Open '+CM.esc(b.title)+' by '+CM.esc(b.author)+'">'+CM.coverHTML(b)+'</a>';
-    ftrack.appendChild(s);
-  });
-  var fs=Array.prototype.slice.call(ftrack.children);
-
-  var pos=0, target=0, dragging=false, startX=0, startPos=0, moved=0, pressed=-1;
-  function wrapDelta(d){ d%=N; if(d>N/2)d-=N; if(d<-N/2)d+=N; return d; }
-  function gapPx(){ return innerWidth<900 ? 78 : 128; }
-
-  var shown=-1, capTimer=null;
-  function paintCap(i){
-    var b=BOOKS[i];
-    cap.querySelector("b").textContent=b.title;
-    cap.querySelector(".sw > span").textContent=b.author+" \u00b7 "+CM.money(b.price);
-    var fr=CM.$("#frontRead");
-    if(fr){ fr.href="read.html?id="+b.id; fr.setAttribute("aria-label","Read chapter one of "+b.title); }
-    var sb=CM.$("#sampleBtn"); if(sb) sb.href="read.html?id="+b.id;
-    var bf=CM.$("#book3dFront"); if(bf) bf.innerHTML=CM.coverHTML(b);
-  }
-  function setCap(i){
-    if(shown===-1){ shown=i; paintCap(i); return; }
-    shown=i; cap.classList.add("turning"); clearTimeout(capTimer);
-    capTimer=setTimeout(function(){ paintCap(i); cap.classList.remove("turning"); },190);
-  }
-
-  function renderFlow(){
-    var gapX=gapPx(), depth=innerWidth<900?150:230;
-    fs.forEach(function(c,i){
-      var d=wrapDelta(i-pos), ad=Math.abs(d);
-      var x=d*gapX, z=-ad*depth, ry=-d*32, y=ad*10-16+Math.sin(d*1.1)*5;
-      var sc=Math.max(.62,1-ad*.11);
-      c.style.transform="translate(-50%,-50%) translate3d("+x+"px,"+y+"px,"+z+"px) rotateY("+ry+"deg) scale("+sc+")";
-      c.style.opacity= ad>2.7?0:String(Math.max(0,1-ad*.27));
-      c.style.zIndex=String(100-Math.round(ad*10));
-      c.style.filter="saturate("+(1-Math.min(.5,ad*.2))+") blur("+Math.min(3,Math.max(0,(ad-.7)*1.6))+"px)";
-      c.querySelector(".cover-link").tabIndex = (ad>2.7||cur!==1) ? -1 : 0;
-    });
-    var act=((Math.round(pos)%N)+N)%N;
-    if(act!==shown) setCap(act);
-  }
-  function flowLoop(){
-    if(!dragging){ pos+=(target-pos)*0.11; if(Math.abs(target-pos)<0.0005) pos=target; }
-    renderFlow(); requestAnimationFrame(flowLoop);
-  }
-  function fgo(i,abs){
-    if(abs){ var c=target; target=c+wrapDelta(i-((((Math.round(c)%N)+N)%N))); }
-    else target+=i;
-  }
-
-  function fIndexAt(el){ var s=el&&el.closest?el.closest(".fslide"):null; return s?fs.indexOf(s):-1; }
-  function fIndexFromX(x){
-    var r=flow.getBoundingClientRect();
-    var off=Math.round((x-(r.left+r.width/2))/gapPx());
-    return ((((Math.round(target)+off)%N)+N)%N);
-  }
-  function fdown(e){
-    dragging=true; moved=0; flow.classList.add("dragging");
-    startX=e.touches?e.touches[0].clientX:e.clientX; startPos=target=pos;
-    userStopped=true; stopAuto();
-  }
-  function fmove(e){
-    if(!dragging) return;
-    var x=e.touches?e.touches[0].clientX:e.clientX;
-    var dx=x-startX; moved=Math.abs(dx); pos=target=startPos-dx/gapPx();
-  }
-  /* Decide from the cover recorded at press time — the covers drift while the
-     parallax moves them, so the browser's own click target is unreliable here. */
-  function fup(){
-    if(!dragging) return;
-    dragging=false; flow.classList.remove("dragging");
-    target=Math.round(pos);
-    var i=pressed; pressed=-1;
-    if(moved<=6 && i>-1){ location.href="book.html?id="+BOOKS[i].id; }
-  }
-  flow.addEventListener("pointerdown",function(e){
-    var i=fIndexAt(e.target); pressed = i>-1 ? i : fIndexFromX(e.clientX);
-  });
-  flow.addEventListener("mousedown",fdown);
-  addEventListener("mousemove",fmove);
-  addEventListener("mouseup",fup);
-  flow.addEventListener("touchstart",fdown,{passive:true});
-  flow.addEventListener("touchmove",fmove,{passive:true});
-  flow.addEventListener("touchend",fup);
-  flow.addEventListener("click",function(e){ if(e.detail!==0) e.preventDefault(); });
-  flow.addEventListener("keydown",function(e){
-    if(e.key==="ArrowRight"){ fgo(1); e.stopPropagation(); e.preventDefault(); }
-    if(e.key==="ArrowLeft"){ fgo(-1); e.stopPropagation(); e.preventDefault(); }
-    if(e.key==="Enter"){ location.href="book.html?id="+BOOKS[shown].id; }
-  });
-  var wl=0;
-  flow.addEventListener("wheel",function(e){
-    if(Math.abs(e.deltaX)<=Math.abs(e.deltaY)) return;
-    e.preventDefault();
-    var now=performance.now(); if(now-wl<240) return;
-    wl=now; fgo(e.deltaX>0?1:-1); userStopped=true; stopAuto();
-  },{passive:false});
-
-  addEventListener("resize",renderFlow);
-  renderFlow(); requestAnimationFrame(flowLoop);
-  document.addEventListener("cm:currency",function(){ if(shown>-1) paintCap(shown); });
+  /* The two hero CTAs point at the featured title. The interactive covers —
+     each opening its own book — live in the grid directly below and on the
+     shelf page; the hero slides carry the illustrations now. */
+  (function(){
+    var lead = CATALOGUE.filter(function(b){ return b.featured; })[0] || CATALOGUE[0];
+    var fr = CM.$("#frontRead"), sb = CM.$("#sampleBtn");
+    if(fr){ fr.href = "read.html?id=" + lead.id;
+            fr.setAttribute("aria-label", "Read chapter one of " + lead.title); }
+    if(sb){ sb.href = "read.html?id=" + lead.id;
+            sb.setAttribute("aria-label", "Read chapter one of " + lead.title); }
+  })();
 
   /* ---------- continue reading ---------- */
   (function paintResume(){
