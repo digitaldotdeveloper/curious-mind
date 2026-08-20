@@ -58,8 +58,8 @@ html[data-theme="dark"] .h3-copy h2 .l2{color:#7fc9bb}
 
 /* soft light behind the art */
 .glowblob{width:78%;aspect-ratio:1.25;border-radius:50%;
-  background:radial-gradient(closest-side,color-mix(in srgb,var(--blush) 70%,transparent),transparent 72%);
-  filter:blur(22px);opacity:.75}
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--blush) 62%,transparent),transparent 78%);
+  opacity:.75}
 html[data-theme="dark"] .glowblob{opacity:.32}
 
 /* ---- the illustration, one element per layer ---- */
@@ -86,10 +86,23 @@ html[data-theme="dark"] .glowblob{opacity:.32}
   50%{transform:translate3d(var(--dx,0px),var(--dy,-14px),0) rotate(var(--rot,0deg))}
 }
 /* the bulb is the anchor of the composition — it glows instead of drifting far */
-.hero-layers .hl-bulb img{filter:drop-shadow(0 0 0 rgba(248,187,215,0));animation:hlglow 6s ease-in-out infinite}
+.hero-layers .hl-bulb img{filter:drop-shadow(0 8px 20px rgba(151,133,185,.42));
+  animation:hlbob 6s ease-in-out infinite}
+@keyframes hlbob{
+  0%,100%{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(0,-9px,0)}
+}
+/* the glow is its own composited layer: animating opacity/transform keeps the
+   bulb's drop-shadow static, so the big alpha image never re-rasterizes */
+.hero-layers .hl-bulb::after{
+  content:"";position:absolute;left:50%;top:52%;width:155%;aspect-ratio:1;
+  border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(closest-side,rgba(248,187,215,.6),rgba(248,187,215,0) 70%);
+  transform:translate3d(-50%,-50%,0);will-change:opacity,transform;
+  animation:hlglow 6s ease-in-out infinite}
 @keyframes hlglow{
-  0%,100%{transform:translate3d(0,0,0);filter:drop-shadow(0 6px 16px rgba(151,133,185,.28))}
-  50%{transform:translate3d(0,-9px,0);filter:drop-shadow(0 10px 26px rgba(248,187,215,.65))}
+  0%,100%{opacity:.3;transform:translate3d(-50%,-50%,0) scale(.86)}
+  50%{opacity:.85;transform:translate3d(-50%,-50%,0) scale(1.06)}
 }
 .hero-layers .hl-scene img{filter:drop-shadow(0 22px 26px rgba(49,45,59,.14))}
 html[data-theme="dark"] .hero-layers img{filter:drop-shadow(0 18px 26px rgba(0,0,0,.5))}
