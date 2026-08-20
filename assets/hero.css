@@ -219,6 +219,9 @@ html[data-theme="dark"] .h3-dots button[aria-current="true"]{background:var(--vi
   .h3-slide{
     position:static;display:flex;flex-direction:column;transform:none!important;
     opacity:1!important;transition:none;text-align:center;
+    /* the desktop rule centres on the cross axis; in a column that stops the art
+       stretching, and its percentage-width layers then resolve against zero */
+    align-items:stretch;
     padding:6px clamp(16px,5vw,28px) 0;
   }
   .h3-slide .h3-art{order:-1}          /* artwork first, as on the phone mockup */
