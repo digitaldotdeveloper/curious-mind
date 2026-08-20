@@ -24,8 +24,44 @@ open `index.html` and everything works, including checkout.
 | `assets/site.css` | Design system: tokens, buttons, cards, forms, dark mode |
 | `assets/pages.css` | Page-level components |
 | `assets/hero.css` | The 3D hero slider |
-| `assets/logo.png` | Logo, background removed |
-| `assets/hero-art.png` | Hero illustration, background removed |
+| `assets/logo.webp` | Logo, background removed |
+| `assets/layers/` | The hero illustration cut into 8 animatable layers + `manifest.json` |
+| `assets/covers/` | The 12 book covers (WebP), generated with Gemini |
+| `tools/` | Cover generation + image tooling. Not part of the site. |
+
+## Book covers
+
+Generated with Gemini through the local Gemini Studio, then shrunk into the site:
+
+```
+node tools/generate-covers.mjs        # all twelve -> tools/.covers-raw
+py   tools/covers-to-webp.py          # -> assets/covers/<id>.webp
+```
+
+Needs the studio running (`Gemini Prompt Sender/dashboard/Start Dashboard.cmd`) and
+signed into Google in its own Chrome profile. The token goes in `tools/.token`
+(gitignored) or `GEMINI_STUDIO_TOKEN`.
+
+Every cover shares one house-style prompt block so the shelf reads as a single shop,
+and the prompt forbids text — the title is set in HTML over the art, so it stays
+selectable, translatable and sharp at any size. Each image is matched back to its
+book **by the prompt it was generated from**, never by job order: jobs run
+concurrently and finish out of order, which silently mis-assigned every cover the
+first time round.
+
+If a cover file is missing the card falls back to the drawn SVG cover, so a partial
+run never breaks the page.
+
+## Performance
+
+The whole site is **~780 KB** including all twelve covers and the layered hero.
+
+- Every raster asset is WebP. The covers are 560px wide — 2x the largest size they
+  are ever displayed at — which took them from 9.5 MB of PNG to 404 KB.
+- The two hero layers that sit above the fold are `<link rel="preload">`ed and eager;
+  the other six are lazy.
+- All images carry intrinsic `width`/`height`, so nothing shifts while loading.
+- No framework, no bundler, no runtime dependency. Two CSS files and two JS files.
 
 ## Worldwide
 

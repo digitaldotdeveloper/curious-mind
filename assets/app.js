@@ -153,7 +153,7 @@ var ART = {
 };
 
 /* A cover is a photographic/painted image when one has been generated into
-   assets/covers/<id>.png, and the drawn SVG cover otherwise. The <img> is
+   assets/covers/<id>.webp, and the drawn SVG cover otherwise. The <img> is
    probed once per book; a missing file just leaves the drawn art in place. */
 var COVER_IMG = {};
 CM.coverHTML = function(b, opts){
@@ -162,7 +162,7 @@ CM.coverHTML = function(b, opts){
   return '<div class="cover'+(COVER_IMG[b.id]?" has-img":"")+'" data-cover="'+b.id+'" '+
       'style="background:linear-gradient(155deg,'+b.c[0]+','+b.c[1]+')">'+
       '<svg class="art" viewBox="0 0 100 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+art+'</svg>'+
-      (COVER_IMG[b.id]!==false ? '<img class="coverimg" src="assets/covers/'+b.id+'.png" alt="" loading="lazy" decoding="async" onload="CM.coverOk(this)" onerror="CM.coverNo(this)">' : '')+
+      (COVER_IMG[b.id]!==false ? '<img class="coverimg" src="assets/covers/'+b.id+'.webp" alt="" width="560" height="835" loading="lazy" decoding="async" onload="CM.coverOk(this)" onerror="CM.coverNo(this)">' : '')+
       '<span class="spine"></span><span class="gloss"></span>'+
       '<div class="ctx"><span class="by">'+esc(b.author)+'</span><h3>'+esc(b.title)+'</h3>'+
         '<span class="mark">Curious Mind</span></div>'+
