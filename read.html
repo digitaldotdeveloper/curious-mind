@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Read — Curious Mind</title>
+<meta name="description" content="Chapter one, free to read.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pages.css">
+</head>
+<body class="reading">
+<span class="rprog" id="rprog" aria-hidden="true"></span>
+<a class="skip" href="#chap">Skip to the chapter</a>
+
+<div class="shell">
+  <div class="rbar" id="rbar">
+    <a class="rtool" href="#" id="backBtn" aria-label="Back to the book">
+      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <div class="now"><b id="rTitle">&nbsp;</b><span id="rMeta">&nbsp;</span></div>
+    <button class="rtool sm" id="fsDown" aria-label="Smaller text">A</button>
+    <button class="rtool lg" id="fsUp" aria-label="Larger text">A</button>
+    <button class="rtool" id="sepiaBtn" aria-pressed="false" aria-label="Sepia paper">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</div>
+
+<main>
+  <article class="chap" id="chap"></article>
+  <div class="endcap" id="endcap"></div>
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+CM.boot(function(){
+  var b=CM.book(CM.param("id"));
+  var chap=CM.$("#chap"), endcap=CM.$("#endcap"), prog=CM.$("#rprog");
+
+  if(!b){
+    chap.innerHTML='<span class="kicker">Not found</span><h1>That chapter isn\'t here</h1>'+
+      '<p>The book may have come off the shelf.</p>';
+    endcap.innerHTML='<a class="btn btn-primary" href="shop.html">Browse the shelf</a>';
+    return;
+  }
+
+  document.title = b.chapter.title.replace(/^One · /,"") + " — " + b.title + " — Curious Mind";
+  CM.$("#backBtn").href="book.html?id="+b.id;
+  CM.$("#rTitle").textContent=b.title;
+  CM.$("#rMeta").textContent=b.author+" · "+b.cat;
+
+  /* verse lines in poetry are marked with / and // in the source text */
+  function para(t){ return '<p>'+CM.esc(t).replace(/\/\//g,"<br>").replace(/ \/ /g,"<br>")+'</p>'; }
+
+  chap.innerHTML='<span class="kicker">'+(CM.owns(b.id)?"Your library":"Free preview")+'</span>'+
+    '<h1>'+CM.esc(b.chapter.title).replace("·","<em>·</em>")+'</h1>'+
+    b.chapter.paras.map(para).join("")+
+    '<div class="rule"></div>';
+
+  var owned=CM.owns(b.id);
+  var idx=CATALOGUE.indexOf(b), nxt=CATALOGUE[(idx+1)%CATALOGUE.length];
+  endcap.innerHTML='<p class="note">'+(owned?"End of chapter one.":"Chapter one ends here.")+'</p>'+
+    '<div class="acts">'+
+      (owned
+        ? '<a class="btn btn-primary" href="library.html">Back to your library</a>'
+        : (CM.inCart(b.id)
+            ? '<a class="btn btn-primary" href="cart.html">In your bag — checkout</a>'
+            : '<button class="btn btn-primary" data-add="'+b.id+'">Buy the full ebook — <span data-usd="'+b.price+'">'+CM.money(b.price)+'</span></button>')+
+          '<a class="btn btn-ghost" href="book.html?id='+b.id+'">About this book</a>')+
+    '</div>'+
+    '<a class="nextlink" href="read.html?id='+nxt.id+'">Next on the shelf: '+CM.esc(nxt.title)+' &rarr;</a>';
+
+  /* ---------- reading preferences ---------- */
+  var FS=[16,18,20,23], fsIdx=CM.read("cm.fs",1);
+  function applyFs(){ document.documentElement.style.setProperty("--fs",FS[fsIdx]+"px"); CM.write("cm.fs",fsIdx); }
+  applyFs();
+  CM.$("#fsUp").addEventListener("click",function(){ fsIdx=Math.min(FS.length-1,fsIdx+1); applyFs(); });
+  CM.$("#fsDown").addEventListener("click",function(){ fsIdx=Math.max(0,fsIdx-1); applyFs(); });
+
+  var sepiaOn=CM.read("cm.sepia",false), sBtn=CM.$("#sepiaBtn");
+  function applySepia(){ document.body.classList.toggle("sepia",sepiaOn); sBtn.setAttribute("aria-pressed",sepiaOn?"true":"false"); CM.write("cm.sepia",sepiaOn); }
+  applySepia();
+  sBtn.addEventListener("click",function(){ sepiaOn=!sepiaOn; applySepia(); });
+
+  /* ---------- progress: bar, save, restore ---------- */
+  function docPct(){
+    var max=document.documentElement.scrollHeight-innerHeight;
+    return max>0 ? Math.min(100,Math.max(0,(scrollY/max)*100)) : 0;
+  }
+  var saveTimer=null;
+  addEventListener("scroll",function(){
+    var p=docPct();
+    prog.style.width=p+"%";
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){ CM.setProgress(b.id,p); },250);
+  },{passive:true});
+
+  var was=CM.progress(b.id);
+  if(was>4 && was<97){
+    setTimeout(function(){
+      var max=document.documentElement.scrollHeight-innerHeight;
+      scrollTo({top:max*(was/100), behavior:"auto"});
+      CM.toast("Picked up where you left off — "+Math.round(was)+"%");
+    },240);
+  }
+  prog.style.width=docPct()+"%";
+
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape") location.href="book.html?id="+b.id;
+  });
+  document.addEventListener("cm:cart",function(){ location.reload(); });
+});
+</script>
+</body>
+</html>

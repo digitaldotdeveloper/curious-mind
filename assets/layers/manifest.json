@@ -1,0 +1,128 @@
+{
+ "canvas": [
+  1150,
+  705
+ ],
+ "layers": [
+  {
+   "name": "sky",
+   "file": "assets/layers/layer-sky.png",
+   "left": 0.348,
+   "top": 0.0,
+   "width": 82.261,
+   "height": 36.312,
+   "px": [
+    4,
+    0,
+    946,
+    256
+   ],
+   "parts": 218
+  },
+  {
+   "name": "balloon",
+   "file": "assets/layers/layer-balloon.png",
+   "left": 84.261,
+   "top": 7.66,
+   "width": 10.522,
+   "height": 27.518,
+   "px": [
+    969,
+    54,
+    121,
+    194
+   ],
+   "parts": 12
+  },
+  {
+   "name": "rocket",
+   "file": "assets/layers/layer-rocket.png",
+   "left": 7.826,
+   "top": 6.383,
+   "width": 26.696,
+   "height": 56.596,
+   "px": [
+    90,
+    45,
+    307,
+    399
+   ],
+   "parts": 1
+  },
+  {
+   "name": "scene",
+   "file": "assets/layers/layer-scene.png",
+   "left": 42.957,
+   "top": 5.816,
+   "width": 52.696,
+   "height": 79.433,
+   "px": [
+    494,
+    41,
+    606,
+    560
+   ],
+   "parts": 1
+  },
+  {
+   "name": "books",
+   "file": "assets/layers/layer-books.png",
+   "left": 31.304,
+   "top": 22.553,
+   "width": 28.522,
+   "height": 46.525,
+   "px": [
+    360,
+    159,
+    328,
+    328
+   ],
+   "parts": 3
+  },
+  {
+   "name": "lab",
+   "file": "assets/layers/layer-lab.png",
+   "left": 2.609,
+   "top": 34.468,
+   "width": 29.478,
+   "height": 45.106,
+   "px": [
+    30,
+    243,
+    339,
+    318
+   ],
+   "parts": 1
+  },
+  {
+   "name": "bulb",
+   "file": "assets/layers/layer-bulb.png",
+   "left": 28.696,
+   "top": 64.539,
+   "width": 19.304,
+   "height": 35.461,
+   "px": [
+    330,
+    455,
+    222,
+    250
+   ],
+   "parts": 1
+  },
+  {
+   "name": "sparks",
+   "file": "assets/layers/layer-sparks.png",
+   "left": 0.0,
+   "top": 36.879,
+   "width": 100.0,
+   "height": 51.348,
+   "px": [
+    0,
+    260,
+    1150,
+    362
+   ],
+   "parts": 107
+  }
+ ]
+}

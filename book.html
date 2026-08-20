@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book — Curious Mind</title>
+<meta name="description" content="Read chapter one free, then buy the DRM-free ebook. Delivered instantly, worldwide.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pages.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="shell" style="padding-top:34px"></main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+CM.boot(function(){
+  var main=CM.$("#main");
+  var b=CM.book(CM.param("id"));
+
+  if(!b){
+    main.innerHTML='<div class="pagehead"><h1>We can\'t find that book</h1>'+
+      '<p>It may have come off the shelf — we only keep twelve at a time.</p></div>'+
+      '<a class="btn btn-primary" href="shop.html">Browse the shelf</a>';
+    return;
+  }
+
+  document.title = b.title + " — " + b.author + " — Curious Mind";
+  var meta=document.querySelector('meta[name="description"]');
+  if(meta) meta.setAttribute("content", b.blurb);
+
+  function render(){
+    var owned=CM.owns(b.id), inCart=CM.inCart(b.id);
+    var ci=CM.countryInfo(CM.country());
+    var vatLine = ci && ci.vat>0
+      ? "Price excludes "+Math.round(ci.vat*1000)/10+"% VAT for "+ci.n+", added at checkout."
+      : "No sales tax added for your region. Instant download, worldwide.";
+
+    main.innerHTML =
+    '<nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span>'+
+      '<a href="shop.html">The Shelf</a><span>/</span>'+
+      '<a href="shop.html?cat='+encodeURIComponent(b.cat)+'">'+CM.esc(b.cat)+'</a><span>/</span>'+
+      '<span aria-current="page">'+CM.esc(b.title)+'</span></nav>'+
+
+    '<div class="bookgrid">'+
+      '<div class="bcol reveal">'+CM.coverHTML(b)+
+        '<div style="display:flex;gap:10px;margin-top:18px">'+
+          '<button class="savebtn" data-save="'+b.id+'" aria-pressed="'+(CM.isSaved(b.id)?"true":"false")+'" aria-label="Save for later" style="width:44px;height:44px">'+CM.icon.heart+'</button>'+
+          '<a class="btn btn-quiet btn-block" href="read.html?id='+b.id+'" style="flex:1">Read chapter one free</a>'+
+        '</div>'+
+      '</div>'+
+
+      '<div class="detail reveal">'+
+        '<span class="kicker">'+CM.esc(b.cat)+'</span>'+
+        '<h1>'+CM.esc(b.title)+'</h1>'+
+        '<p class="byline">by <b>'+CM.esc(b.author)+'</b></p>'+
+        '<div class="metarow">'+CM.stars(b.rating)+
+          '<span>'+b.rating.toFixed(1)+' · '+b.reviews+' readers</span><span>·</span>'+
+          '<span>'+b.pages+' pages</span><span>·</span><span>'+b.year+'</span></div>'+
+
+        '<div class="buybox">'+
+          '<span class="pricetag" data-usd="'+b.price+'">'+CM.money(b.price)+'</span>'+
+          (owned
+            ? '<a class="btn btn-primary btn-lg" href="read.html?id='+b.id+'">Read it now</a>'+
+              '<a class="btn btn-quiet" href="library.html">In your library</a>'
+            : (inCart
+              ? '<a class="btn btn-primary btn-lg" href="cart.html">In your bag — checkout</a>'
+              : '<button class="btn btn-primary btn-lg" data-add="'+b.id+'">Add to bag</button>')+
+              '<a class="btn btn-ghost" href="read.html?id='+b.id+'">Read chapter one</a>')+
+          '<p class="vatnote">'+CM.esc(vatLine)+'</p>'+
+        '</div>'+
+
+        '<div class="trustrow" style="border:0;padding-top:6px;margin-bottom:26px">'+
+          '<span><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg> DRM-free EPUB, PDF and MOBI — yours forever</span>'+
+          '<span><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg> Instant download, delivered worldwide</span>'+
+          '<span><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg> 14-day refund, no questions asked</span>'+
+        '</div>'+
+
+        '<div class="prose">'+b.about.map(function(p){ return '<p>'+CM.esc(p)+'</p>'; }).join("")+'</div>'+
+
+        '<dl class="factgrid">'+
+          '<div><dt>Format</dt><dd>EPUB · PDF · MOBI</dd></div>'+
+          '<div><dt>Length</dt><dd>'+b.pages+' pages</dd></div>'+
+          '<div><dt>Published</dt><dd>'+b.year+'</dd></div>'+
+          '<div><dt>Language</dt><dd>English</dd></div>'+
+          '<div><dt>Protection</dt><dd>None — DRM-free</dd></div>'+
+          '<div><dt>Delivery</dt><dd>Instant, worldwide</dd></div>'+
+        '</dl>'+
+
+        '<h2 style="font-size:24px;font-weight:300;margin:34px 0 16px">What&rsquo;s inside</h2>'+
+        '<ul class="toclist">'+b.contents.map(function(t,i){
+          return '<li><i>'+String(i+1).padStart(2,"0")+'</i>'+CM.esc(t)+(i===0?' &nbsp;<a class="linky" href="read.html?id='+b.id+'">read free</a>':'')+'</li>';
+        }).join("")+'</ul>'+
+      '</div>'+
+    '</div>'+
+
+    '<section class="section"><div class="shead reveal"><div><h2>Also on the <em>shelf</em></h2>'+
+      '<p>Chosen by the same person, in the same mood.</p></div>'+
+      '<a class="btn btn-quiet" href="shop.html">See all twelve</a></div>'+
+      '<div class="grid-books">'+related().map(CM.bookCard).join("")+'</div></section>';
+
+    CM.reveal(main);
+  }
+
+  function related(){
+    var same=CATALOGUE.filter(function(x){ return x.id!==b.id && x.cat===b.cat; });
+    var rest=CATALOGUE.filter(function(x){ return x.id!==b.id && x.cat!==b.cat; })
+      .sort(function(a,c){ return c.rating-a.rating; });
+    return same.concat(rest).slice(0,4);
+  }
+
+  render();
+  document.addEventListener("cm:cart",render);
+  document.addEventListener("cm:currency",render);
+});
+</script>
+</body>
+</html>

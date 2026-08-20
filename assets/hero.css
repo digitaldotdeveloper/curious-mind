@@ -1,0 +1,239 @@
+/* Curious Mind — 3D hero slider */
+
+.hero3d{
+  /* full-bleed so the arrows can live in the outer margin, clear of the headline */
+  width:100vw;margin-left:calc(50% - 50vw);
+  padding-inline:clamp(14px,5vw,86px);
+  position:relative;
+  perspective:1500px;
+  perspective-origin:50% 46%;
+  min-height:clamp(540px,74vh,700px);
+  margin-top:10px;
+  overflow:hidden;
+  --mx:0; --my:0;              /* pointer parallax, -1 … 1 */
+}
+.hero3d .h3-viewport{position:relative;width:min(1180px,100%);margin-inline:auto;
+  height:clamp(540px,74vh,700px);transform-style:preserve-3d}
+
+.h3-slide{
+  position:absolute;inset:0;
+  display:grid;grid-template-columns:minmax(280px,42%) 1fr;
+  align-items:center;gap:clamp(20px,4vw,54px);
+  transform-style:preserve-3d;
+  will-change:transform,opacity;
+  transition:transform 1.05s var(--ease-out), opacity .7s var(--ease);
+  pointer-events:none;
+}
+.h3-slide.on{pointer-events:auto}
+.h3-slide .h3-copy{position:relative;z-index:4;transform-style:preserve-3d}
+.h3-slide .h3-art{position:relative;height:100%;transform-style:preserve-3d;padding:8px 0}
+
+/* copy */
+.h3-copy .eyebrow{margin-bottom:16px}
+.h3-copy h2{
+  font-size:clamp(40px,5.6vw,74px);line-height:1.0;letter-spacing:-.03em;font-weight:700;
+  margin:0 0 18px;
+}
+.h3-copy h2 span{display:block}
+.h3-copy h2 .l1{color:var(--violet-deep)}
+.h3-copy h2 .l2{color:#3f8b80}
+.h3-copy h2 .l3{color:var(--violet-deep)}
+html[data-theme="dark"] .h3-copy h2 .l1,
+html[data-theme="dark"] .h3-copy h2 .l3{color:#c8b6e8}
+html[data-theme="dark"] .h3-copy h2 .l2{color:#7fc9bb}
+.h3-copy p.sub{font-size:clamp(15.5px,1.6vw,19px);color:var(--muted);max-width:34ch;margin:0 0 26px}
+.h3-copy .h3-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* staggered entrance for the live slide */
+.h3-slide .anim{opacity:0;transform:translateY(22px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+.h3-slide.on .anim{opacity:1;transform:none}
+.h3-slide.on .anim:nth-child(1){transition-delay:.10s}
+.h3-slide.on .anim:nth-child(2){transition-delay:.18s}
+.h3-slide.on .anim:nth-child(3){transition-delay:.26s}
+.h3-slide.on .anim:nth-child(4){transition-delay:.34s}
+
+/* ---- depth layers ---- */
+.dlayer{position:absolute;inset:0;display:grid;place-items:center;transform-style:preserve-3d;
+  will-change:transform;transition:transform .5s cubic-bezier(.2,.8,.3,1)}
+
+/* soft light behind the art */
+.glowblob{width:78%;aspect-ratio:1.25;border-radius:50%;
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--blush) 70%,transparent),transparent 72%);
+  filter:blur(22px);opacity:.75}
+html[data-theme="dark"] .glowblob{opacity:.32}
+
+/* ---- the illustration, one element per layer ---- */
+.hero-layers{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(100%, calc((100% - 0px)));
+  aspect-ratio:1150 / 705;
+  max-height:100%;
+  transform-style:preserve-3d;
+}
+.hero-layers .hl-item{
+  position:absolute;display:block;transform-style:preserve-3d;will-change:transform;
+  /* pointer parallax (--px/--py, set by JS) + scroll parallax (--par) + idle drift */
+  transform:translate3d(var(--px,0px), calc(var(--py,0px) + var(--par,0px)), var(--z,0px));
+  transition:transform .5s cubic-bezier(.2,.8,.3,1);
+}
+.hero-layers .hl-item img{
+  width:100%;height:auto;display:block;
+  animation:hlfloat var(--dur,12s) ease-in-out infinite;
+  animation-delay:var(--del,0s);
+}
+@keyframes hlfloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(0deg)}
+  50%{transform:translate3d(var(--dx,0px),var(--dy,-14px),0) rotate(var(--rot,0deg))}
+}
+/* the bulb is the anchor of the composition — it glows instead of drifting far */
+.hero-layers .hl-bulb img{filter:drop-shadow(0 0 0 rgba(248,187,215,0));animation:hlglow 6s ease-in-out infinite}
+@keyframes hlglow{
+  0%,100%{transform:translate3d(0,0,0);filter:drop-shadow(0 6px 16px rgba(151,133,185,.28))}
+  50%{transform:translate3d(0,-9px,0);filter:drop-shadow(0 10px 26px rgba(248,187,215,.65))}
+}
+.hero-layers .hl-scene img{filter:drop-shadow(0 22px 26px rgba(49,45,59,.14))}
+html[data-theme="dark"] .hero-layers img{filter:drop-shadow(0 18px 26px rgba(0,0,0,.5))}
+
+/* floating accents at their own depth */
+.sparks{position:absolute;inset:0;pointer-events:none}
+.sparks i{position:absolute;display:block;border-radius:50%;background:var(--violet);opacity:.5;
+  animation:drift var(--dur,11s) ease-in-out infinite;animation-delay:var(--del,0s)}
+.sparks i.star{border-radius:0;background:none;color:var(--blush);font-style:normal;
+  font-size:var(--sz,14px);line-height:1;opacity:.9}
+.sparks i.ring{background:none;border:1.5px solid color-mix(in srgb,var(--violet) 55%,transparent);opacity:.5}
+@keyframes drift{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  33%{transform:translate3d(10px,-16px,0) scale(1.08)}
+  66%{transform:translate3d(-8px,10px,0) scale(.95)}
+}
+
+/* ---- slide 2: coverflow ---- */
+.h3-flow{position:relative;height:100%;transform-style:preserve-3d;cursor:grab;touch-action:pan-y;
+  user-select:none;-webkit-user-select:none}
+.h3-flow.dragging{cursor:grabbing}
+.h3-flow .flowtrack{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+.fslide{position:absolute;left:50%;top:50%;width:clamp(120px,13vw,168px);pointer-events:auto;
+  transform-style:preserve-3d;will-change:transform,opacity;
+  transition:transform .85s var(--ease),opacity .85s var(--ease),filter .85s var(--ease)}
+.h3-flow.dragging .fslide{transition:none}
+.flowcaption{position:absolute;left:0;right:0;bottom:20%;text-align:center;z-index:30}
+.flowcaption b{display:block;font-family:'Fraunces',serif;font-weight:500;font-size:17px}
+.flowcaption span{font-size:12.5px;color:var(--muted)}
+.flowcaption .sw{display:block;transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.flowcaption.turning .sw{opacity:0;transform:translateY(6px)}
+
+/* ---- slide 3: a cover that swings open onto chapter one ---- */
+.book3d{position:relative;width:clamp(190px,21vw,270px);aspect-ratio:2/3;
+  transform-style:preserve-3d;transform:rotateY(-19deg) rotateX(7deg);
+  filter:drop-shadow(0 34px 34px rgba(49,45,59,.26))}
+html[data-theme="dark"] .book3d{filter:drop-shadow(0 34px 34px rgba(0,0,0,.6))}
+
+/* the page you read once the cover opens */
+.bk-page{position:absolute;inset:0;border-radius:4px 12px 12px 4px;overflow:hidden;
+  background:linear-gradient(105deg,#fffdf8 0%,#fbf6ec 62%,#f1e9db 100%);
+  box-shadow:inset 14px 0 22px -16px rgba(49,45,59,.45);
+  padding:13% 11% 10% 15%}
+.bk-page .pk{font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:#a08fbe;margin-bottom:7px}
+.bk-page .ph2{font-family:'Fraunces',serif;font-size:12px;line-height:1.15;color:#4a4034;margin-bottom:10px}
+.bk-page .ln{height:3px;border-radius:3px;background:#cfc4b2;opacity:.55;margin-bottom:6px}
+.bk-page .ln.s{width:62%}
+.bk-page .cap{float:left;font-family:'Fraunces',serif;font-size:24px;line-height:.8;color:#7a6aa0;
+  margin:1px 5px 0 0}
+
+/* the swinging cover */
+.bk-cover{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
+  animation:openbook 9.5s cubic-bezier(.5,0,.3,1) infinite}
+.bk-cover .cf,.bk-cover .cb{position:absolute;inset:0;border-radius:4px 12px 12px 4px;
+  backface-visibility:hidden;overflow:hidden}
+.bk-cover .cf{box-shadow:2px 3px 14px rgba(49,45,59,.28)}
+.bk-cover .cf .cover{border-radius:4px 12px 12px 4px;box-shadow:none;height:100%}
+.bk-cover .cb{transform:rotateY(180deg);
+  background:linear-gradient(255deg,#fdf9f1,#e9e0d0);
+  border:1px solid rgba(90,75,120,.16);
+  box-shadow:inset -16px 0 26px -16px rgba(49,45,59,.45)}
+@keyframes openbook{
+  0%,16%   {transform:rotateY(0deg)}
+  52%,72%  {transform:rotateY(-137deg)}
+  100%     {transform:rotateY(0deg)}
+}
+/* the spine edge stays put while the cover swings */
+.bk-spine{position:absolute;left:-3px;top:1.5%;bottom:1.5%;width:7px;border-radius:3px;
+  background:linear-gradient(90deg,#5c4f7d,#8d7cb3);transform:translateZ(-4px)}
+
+/* ---- controls ---- */
+.h3-arw{position:absolute;top:46%;z-index:40;width:52px;height:52px;border-radius:50%;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);color:var(--ink);
+  display:grid;place-items:center;transform:translateY(-50%);box-shadow:var(--shadow-sm);
+  transition:transform .4s var(--ease),background .35s,color .35s,border-color .35s}
+.h3-arw:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-50%) scale(1.06)}
+html[data-theme="dark"] .h3-arw:hover{background:var(--violet-deep);color:#1a1622}
+.h3-arw svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.h3-arw.p{left:clamp(2px,1.6vw,26px)}
+.h3-arw.n{right:clamp(2px,1.6vw,26px)}
+
+.h3-foot{position:absolute;left:50%;transform:translateX(-50%);width:min(1180px,calc(100% - 2*clamp(14px,5vw,86px)));bottom:6px;z-index:40;display:flex;align-items:center;
+  gap:16px;flex-wrap:wrap}
+.h3-dots{display:flex;gap:9px;align-items:center}
+.h3-dots button{width:9px;height:9px;border-radius:50%;background:var(--ash);opacity:.6;padding:0;
+  transition:.5s var(--ease)}
+.h3-dots button[aria-current="true"]{width:30px;border-radius:var(--r-pill);background:var(--blush);opacity:1}
+html[data-theme="dark"] .h3-dots button[aria-current="true"]{background:var(--violet-deep)}
+.h3-play{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;color:var(--faint);
+  border:1px solid transparent;transition:.3s}
+.h3-play:hover{color:var(--ink);border-color:var(--line)}
+.h3-play svg{width:12px;height:12px;fill:currentColor;stroke:none}
+
+.h3-pill{margin-left:auto;display:flex;align-items:center;gap:12px;padding:11px 18px 11px 12px;
+  border-radius:var(--r-pill);background:var(--surface);border:1px solid var(--line);
+  box-shadow:var(--shadow-md);max-width:min(360px,70vw)}
+.h3-pill .ph{width:34px;height:34px;border-radius:50%;background:#e8628a;color:#fff;display:grid;place-items:center;flex:0 0 auto}
+.h3-pill .ph svg{width:17px;height:17px;fill:currentColor;stroke:none}
+.h3-pill b{display:block;font-size:14px;font-weight:400;color:var(--ink);line-height:1.25}
+.h3-pill span{font-size:12.5px;color:var(--muted)}
+
+/* ---- responsive ---- */
+@media(max-width:900px){
+  .hero3d{perspective:1000px;padding-inline:clamp(14px,5vw,28px);overflow:visible}
+  /* slides stay absolutely positioned, so the viewport needs its own height */
+  .hero3d .h3-viewport{height:auto;min-height:clamp(548px,82vh,700px)}
+  .h3-slide{
+    grid-template-columns:1fr;
+    grid-template-rows:minmax(200px,42%) auto;
+    gap:14px;text-align:center;align-content:center;
+  }
+  .h3-slide .h3-art{order:-1;height:100%;min-height:190px}
+  .h3-copy h2{font-size:clamp(34px,10vw,50px)}
+  .h3-copy .eyebrow{margin-bottom:10px}
+  .h3-copy p.sub{margin:0 auto 20px;font-size:16px}
+  .h3-copy .h3-cta{justify-content:center}
+  .artimg{max-height:100%;max-width:92%}
+
+  .h3-arw{top:26%;width:44px;height:44px}
+  .h3-arw.p{left:2px}
+  .h3-arw.n{right:2px}
+
+  .h3-foot{position:static;left:auto;transform:none;width:100%;
+    justify-content:center;margin-top:24px;gap:14px 16px;flex-wrap:wrap}
+  .h3-pill{margin-left:0;flex:0 0 100%;max-width:420px;margin-inline:auto}
+
+  .book3d{width:clamp(120px,30vw,168px)}
+  .fslide{width:clamp(92px,23vw,126px)}
+  .flowcaption{bottom:-6px}
+}
+@media(max-width:420px){
+  .hero3d .h3-viewport{min-height:520px}
+  .h3-copy h2{font-size:clamp(30px,9vw,40px)}
+  .h3-copy p.sub{font-size:15px;margin-bottom:16px}
+}
+@media(max-height:760px) and (min-width:901px){
+  .hero3d,.hero3d .h3-viewport{min-height:0;height:clamp(430px,64vh,520px)}
+  .h3-copy h2{font-size:clamp(34px,4.4vw,54px)}
+  .h3-copy p.sub{margin-bottom:18px;font-size:15.5px}
+  .book3d{width:clamp(150px,17vw,205px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .artimg,.sparks i,.bk-cover{animation:none!important}
+  .bk-cover{transform:rotateY(-137deg)}
+  .h3-slide{transition:opacity .25s linear}
+}

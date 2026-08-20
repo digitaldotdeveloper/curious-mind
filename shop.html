@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Shelf — Curious Mind</title>
+<meta name="description" content="The whole Curious Mind catalogue: twelve hand-picked, DRM-free ebooks. Search, filter and read chapter one free.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pages.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<main id="main" class="shell">
+  <div class="pagehead">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><span aria-current="page">The Shelf</span></nav>
+    <h1 id="shopTitle">The <em>Shelf</em></h1>
+    <p id="shopSub">Twelve titles a month, each read cover to cover before it earned a place. Chapter one of every book is free.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="searchwrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <label class="sr" for="q">Search books</label>
+      <input class="input" id="q" type="search" placeholder="Search by title, author or subject…" autocomplete="off">
+    </div>
+    <label class="sr" for="sort">Sort by</label>
+    <select class="input" id="sort" style="max-width:210px">
+      <option value="featured">Featured first</option>
+      <option value="new">Newest</option>
+      <option value="rating">Best rated</option>
+      <option value="price-asc">Price: low to high</option>
+      <option value="price-desc">Price: high to low</option>
+      <option value="title">Title A–Z</option>
+    </select>
+  </div>
+
+  <div class="chiprow" id="chips" role="group" aria-label="Filter by category"></div>
+
+  <p class="resultline" id="resultLine"></p>
+  <div class="grid-books" id="grid"></div>
+  <div id="emptySlot"></div>
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+CM.boot(function(){
+  var q=CM.$("#q"), sortSel=CM.$("#sort"), chips=CM.$("#chips"), grid=CM.$("#grid"),
+      line=CM.$("#resultLine"), emptySlot=CM.$("#emptySlot");
+
+  var cats=["All"].concat(CATALOGUE.map(function(b){ return b.cat; })
+    .filter(function(v,i,a){ return a.indexOf(v)===i; }).sort());
+
+  var state = {
+    cat: CM.param("cat") || "All",
+    view: CM.param("view") || "all",
+    q: "",
+    sort: "featured"
+  };
+  if(cats.indexOf(state.cat)<0) state.cat="All";
+
+  if(state.view==="saved"){
+    CM.$("#shopTitle").innerHTML='Saved for <em>later</em>';
+    CM.$("#shopSub").textContent="Books you've set aside. They stay here until you take them off.";
+  }
+
+  chips.innerHTML = cats.map(function(c){
+    return '<button class="chip" type="button" data-cat="'+CM.esc(c)+'" aria-pressed="'+(c===state.cat?"true":"false")+'">'+CM.esc(c)+'</button>';
+  }).join("") + '<button class="chip" type="button" data-view="saved" aria-pressed="'+(state.view==="saved"?"true":"false")+'">♥ Saved</button>';
+
+  chips.addEventListener("click",function(e){
+    var c=e.target.closest("[data-cat]"), v=e.target.closest("[data-view]");
+    if(c){ state.cat=c.getAttribute("data-cat"); state.view="all"; }
+    else if(v){ state.view = state.view==="saved"?"all":"saved"; }
+    else return;
+    CM.$$(".chip",chips).forEach(function(b){
+      var on = (b.getAttribute("data-cat")===state.cat && state.view!=="saved") ||
+               (b.hasAttribute("data-view") && state.view==="saved");
+      b.setAttribute("aria-pressed", on?"true":"false");
+    });
+    paint();
+  });
+
+  q.addEventListener("input",function(){ state.q=this.value.trim().toLowerCase(); paint(); });
+  sortSel.addEventListener("change",function(){ state.sort=this.value; paint(); });
+
+  function match(b){
+    if(state.view==="saved" && !CM.isSaved(b.id)) return false;
+    if(state.cat!=="All" && b.cat!==state.cat) return false;
+    if(!state.q) return true;
+    return (b.title+" "+b.author+" "+b.cat+" "+b.blurb).toLowerCase().indexOf(state.q)>-1;
+  }
+  function sorter(a,b){
+    switch(state.sort){
+      case "new": return b.year-a.year || b.rating-a.rating;
+      case "rating": return b.rating-a.rating;
+      case "price-asc": return a.price-b.price;
+      case "price-desc": return b.price-a.price;
+      case "title": return a.title.localeCompare(b.title);
+      default: return (b.featured?1:0)-(a.featured?1:0) || b.rating-a.rating;
+    }
+  }
+
+  function paint(){
+    var list=CATALOGUE.filter(match).sort(sorter);
+    grid.innerHTML=list.map(CM.bookCard).join("");
+    emptySlot.innerHTML="";
+    line.textContent = list.length
+      ? (list.length+(list.length===1?" book":" books")+(state.cat!=="All"?" in "+state.cat:"")+(state.q?' matching “'+state.q+'”':""))
+      : "";
+    if(!list.length){
+      emptySlot.innerHTML='<div class="empty"><img src="assets/logo.png" alt="">'+
+        '<h3>'+(state.view==="saved"?"Nothing saved yet":"No books match that")+'</h3>'+
+        '<p>'+(state.view==="saved"
+            ? "Tap the heart on any cover and it will wait for you here."
+            : "Try a shorter search, or clear the filters and browse the whole shelf.")+'</p>'+
+        '<a class="btn btn-primary" href="shop.html">Browse everything</a></div>';
+    }
+    CM.reveal(grid);
+  }
+
+  paint();
+  document.addEventListener("cm:currency",paint);
+  document.addEventListener("cm:cart",paint);
+  document.addEventListener("cm:savedchange",function(){ if(state.view==="saved") paint(); });
+});
+</script>
+</body>
+</html>

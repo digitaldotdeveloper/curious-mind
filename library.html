@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My library — Curious Mind</title>
+<meta name="description" content="Every book you own, DRM-free and yours to keep.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pages.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="shell" style="min-height:60vh"></main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+CM.boot(function(){
+  var main=CM.$("#main");
+
+  function render(){
+    var ids=CM.library(), orders=CM.orders();
+    var head='<div class="pagehead"><nav class="crumbs"><a href="index.html">Home</a><span>/</span>'+
+      '<span aria-current="page">My library</span></nav>'+
+      '<h1>My <em>library</em></h1>'+
+      '<p>Everything you own, DRM-free and downloadable as often as you like. Reading position is kept per book.</p></div>';
+
+    if(!ids.length){
+      main.innerHTML=head+'<div class="empty"><img src="assets/logo.png" alt="">'+
+        '<h3>Your library is empty</h3>'+
+        '<p>Books you buy land here permanently — no subscription, no expiry, no app required.</p>'+
+        '<a class="btn btn-primary" href="shop.html">Find your first one</a></div>';
+      return;
+    }
+
+    main.innerHTML=head+
+      '<div class="libgrid">'+ids.map(function(id){
+        var b=CM.book(id); if(!b) return "";
+        var p=Math.round(CM.progress(id));
+        return '<article class="bookcard libcard reveal">'+
+          '<a class="cover-link" href="read.html?id='+b.id+'" aria-label="Read '+CM.esc(b.title)+'">'+CM.coverHTML(b)+'</a>'+
+          '<div class="bc-body"><h3><a href="read.html?id='+b.id+'">'+CM.esc(b.title)+'</a></h3>'+
+          '<p class="auth">'+CM.esc(b.author)+'</p>'+
+          '<div class="lib-prog"><div class="bar"><i style="width:'+p+'%"></i></div>'+
+            '<span>'+(p>96?"Finished":(p>2?p+"% read":"Not started"))+'</span></div>'+
+          '<div class="bc-foot"><a class="btn btn-quiet btn-sm btn-block" href="read.html?id='+b.id+'">'+
+            (p>2&&p<97?"Continue":"Read")+'</a></div></div></article>';
+      }).join("")+'</div>'+
+
+      (orders.length
+        ? '<section class="section-sm"><div class="shead"><div><h2>Order <em>history</em></h2></div></div>'+
+          '<div>'+orders.map(function(o){
+            var d=new Date(o.date);
+            return '<div class="lineitem"><div class="li-body"><h3 style="font-size:16px">'+o.no+'</h3>'+
+              '<p class="li-meta">'+d.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})+
+              ' · '+o.items.length+' '+(o.items.length===1?"ebook":"ebooks")+' · sent to '+CM.esc(o.email)+'</p></div>'+
+              '<div class="li-side"><span class="pricetag" style="font-size:17px">'+CM.money(o.totalUSD)+'</span></div></div>';
+          }).join("")+'</div></section>'
+        : "");
+
+    CM.reveal(main);
+  }
+
+  render();
+  document.addEventListener("cm:currency",render);
+});
+</script>
+</body>
+</html>

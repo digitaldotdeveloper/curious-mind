@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your bag — Curious Mind</title>
+<meta name="description" content="Checkout — DRM-free ebooks delivered instantly, worldwide.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/pages.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="shell" style="padding-top:30px;min-height:60vh"></main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+CM.boot(function(){
+  var main=CM.$("#main");
+  var step = 1;                 // 1 bag · 2 details · 3 payment · 4 done
+  var order = null;
+  var pay = "card";
+  var details = { email:"", name:"", country:CM.country()||"" };
+
+  var ICONCHK='<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+
+  function stepsBar(){
+    var labels=["Your bag","Your details","Payment"];
+    return '<div class="steps">'+labels.map(function(l,i){
+      var n=i+1, cls = step>n?"st done" : (step===n?"st on":"st");
+      return '<span class="'+cls+'"><b>'+(step>n?"✓":n)+'</b>'+l+'</span>'+(i<2?'<i></i>':'');
+    }).join("")+'</div>';
+  }
+
+  function summaryBox(showPromo){
+    var t=CM.totals(), ci=CM.countryInfo(details.country||CM.country());
+    return '<aside class="summary">'+
+      '<h2>Order summary</h2>'+
+      '<div class="sumrow"><span>'+t.count+' '+(t.count===1?"ebook":"ebooks")+'</span><b>'+CM.money(t.sub)+'</b></div>'+
+      (t.disc>0?'<div class="sumrow off"><span>Discount ('+CM.esc(CM.promo())+' · '+t.promoLabel+')</span><b>−'+CM.money(t.disc)+'</b></div>':'')+
+      '<div class="sumrow"><span>Delivery</span><b>Instant download</b></div>'+
+      '<div class="sumrow"><span>VAT'+(ci?" · "+CM.esc(ci.n):"")+'</span><b>'+(t.vatRate>0?CM.money(t.vat):"—")+'</b></div>'+
+      '<div class="sumrow total"><span>Total</span><b>'+CM.money(t.total)+'</b></div>'+
+      (showPromo
+        ? '<form class="promoform" id="promoForm"><label class="sr" for="promo">Promo code</label>'+
+          '<input class="input" id="promo" placeholder="Promo code" autocomplete="off" value="'+CM.esc(CM.promo()||"")+'">'+
+          '<button class="btn btn-quiet btn-sm" type="submit">Apply</button></form>'+
+          '<p class="err" id="promoErr"></p>'
+        : '')+
+      '<div class="trustrow">'+
+        '<span>'+ICONCHK+' DRM-free EPUB, PDF and MOBI</span>'+
+        '<span>'+ICONCHK+' Delivered instantly to 70+ countries</span>'+
+        '<span>'+ICONCHK+' 14-day refund, no questions asked</span>'+
+        '<span>'+ICONCHK+' Prices shown in '+CM.currency()+'</span>'+
+      '</div></aside>';
+  }
+
+  function countryOptions(sel){
+    return '<option value="">Select your country…</option>' + COUNTRIES.map(function(c){
+      return '<option value="'+c.c+'"'+(c.c===sel?" selected":"")+'>'+CM.esc(c.n)+'</option>';
+    }).join("");
+  }
+
+  /* ---------------- step 1: the bag ---------------- */
+  function renderBag(){
+    var ids=CM.cart();
+    if(!ids.length){
+      main.innerHTML='<div class="pagehead"><nav class="crumbs"><a href="index.html">Home</a><span>/</span><span>Your bag</span></nav>'+
+        '<h1>Your <em>bag</em></h1></div>'+
+        '<div class="empty"><img src="assets/logo.png" alt="">'+
+        '<h3>Nothing in the bag yet</h3>'+
+        '<p>Chapter one of every book is free — start there, and add the ones that keep you reading.</p>'+
+        '<a class="btn btn-primary" href="shop.html">Browse the shelf</a></div>';
+      return;
+    }
+    main.innerHTML='<div class="pagehead"><nav class="crumbs"><a href="index.html">Home</a><span>/</span>'+
+      '<a href="shop.html">The Shelf</a><span>/</span><span aria-current="page">Your bag</span></nav>'+
+      '<h1>Your <em>bag</em></h1></div>'+
+      stepsBar()+
+      '<div class="cartgrid"><div>'+
+        ids.map(function(id){
+          var b=CM.book(id);
+          return '<div class="lineitem"><div class="li-cover"><a href="book.html?id='+b.id+'">'+CM.coverHTML(b)+'</a></div>'+
+            '<div class="li-body"><h3><a href="book.html?id='+b.id+'">'+CM.esc(b.title)+'</a></h3>'+
+            '<p class="li-meta">'+CM.esc(b.author)+' · '+b.pages+' pp · EPUB, PDF &amp; MOBI</p>'+
+            '<p class="li-meta" style="margin-top:6px"><a class="linky" href="read.html?id='+b.id+'">Read chapter one</a></p></div>'+
+            '<div class="li-side"><span class="pricetag">'+CM.money(b.price)+'</span>'+
+            '<button class="rm" data-rm="'+b.id+'">Remove</button></div></div>';
+        }).join("")+
+        '<div style="margin-top:26px"><a class="btn btn-quiet" href="shop.html">Keep browsing</a></div>'+
+      '</div>'+
+      summaryBox(true)+
+      '</div>'+
+      '<div style="max-width:520px;margin:26px 0 0"><button class="btn btn-primary btn-lg btn-block" id="toDetails">Continue to checkout</button></div>';
+
+    CM.$("#toDetails").addEventListener("click",function(){ step=2; render(); });
+    wirePromo();
+    main.addEventListener("click",function(e){
+      var rm=e.target.closest("[data-rm]");
+      if(rm){ CM.removeFromCart(rm.getAttribute("data-rm")); CM.toast("Removed from your bag."); }
+    });
+  }
+
+  function wirePromo(){
+    var f=CM.$("#promoForm"); if(!f) return;
+    f.addEventListener("submit",function(e){
+      e.preventDefault();
+      var code=CM.$("#promo").value.trim().toUpperCase(), err=CM.$("#promoErr");
+      if(!code){ CM.setPromo(null); render(); return; }
+      if(PROMOS[code]){ CM.setPromo(code); CM.toast("Code applied — "+PROMOS[code].label+"."); render(); }
+      else { err.textContent="That code isn't valid. Try SLOWREAD."; CM.$("#promo").classList.add("bad"); }
+    });
+  }
+
+  /* ---------------- step 2: details ---------------- */
+  function renderDetails(){
+    main.innerHTML='<div class="pagehead"><nav class="crumbs"><a href="index.html">Home</a><span>/</span>'+
+      '<a href="cart.html">Your bag</a><span>/</span><span aria-current="page">Checkout</span></nav>'+
+      '<h1>Where should we <em>send it</em>?</h1>'+
+      '<p>Ebooks are delivered by email and available in your library straight away — there is nothing to ship.</p></div>'+
+      stepsBar()+
+      '<div class="cartgrid"><div>'+
+        '<form id="detailsForm" novalidate>'+
+        '<div class="formgrid">'+
+          '<div class="field full"><label for="email">Email for delivery</label>'+
+            '<input class="input" id="email" type="email" autocomplete="email" placeholder="you@example.com" value="'+CM.esc(details.email)+'" required>'+
+            '<span class="err" id="emailErr"></span></div>'+
+          '<div class="field"><label for="name">Name</label>'+
+            '<input class="input" id="name" autocomplete="name" placeholder="Your name" value="'+CM.esc(details.name)+'">'+
+            '<span class="err"></span></div>'+
+          '<div class="field"><label for="country">Country</label>'+
+            '<select class="input" id="country" autocomplete="country" required>'+countryOptions(details.country)+'</select>'+
+            '<span class="err" id="countryErr"></span></div>'+
+          '<div class="field full"><label for="vatid">VAT / Tax ID <span style="text-transform:none;letter-spacing:0">(optional — businesses in the EU)</span></label>'+
+            '<input class="input" id="vatid" placeholder="e.g. DE123456789"><span class="err"></span></div>'+
+        '</div>'+
+        '<p style="font-size:13.5px;color:var(--muted);margin:18px 0 0">Your country sets the tax rate and the currency shown. '+
+          'We do not store anything on a server — this shop keeps your bag in your own browser.</p>'+
+        '<div style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap">'+
+          '<button class="btn btn-quiet" type="button" id="backBag">Back to bag</button>'+
+          '<button class="btn btn-primary btn-lg" type="submit">Continue to payment</button>'+
+        '</div></form>'+
+      '</div>'+
+      summaryBox(false)+
+      '</div>';
+
+    CM.$("#backBag").addEventListener("click",function(){ step=1; render(); });
+
+    CM.$("#country").addEventListener("change",function(){
+      details.country=this.value;
+      CM.setCountry(this.value);
+      var info=CM.countryInfo(this.value);
+      if(info){ CM.setCurrency(info.cur); var s=CM.$("#curSel"); if(s) s.value=info.cur; }
+      render();
+    });
+
+    CM.$("#detailsForm").addEventListener("submit",function(e){
+      e.preventDefault();
+      var email=CM.$("#email"), country=CM.$("#country"), ok=true;
+      details.name=CM.$("#name").value.trim();
+      if(!email.value.trim() || !/^[^@\s]+@[^@\s.]+\.[^@\s]{2,}$/.test(email.value.trim())){
+        CM.$("#emailErr").textContent="We need a valid email to send the files to.";
+        email.classList.add("bad"); ok=false;
+      } else { CM.$("#emailErr").textContent=""; email.classList.remove("bad"); details.email=email.value.trim(); }
+      if(!country.value){
+        CM.$("#countryErr").textContent="Pick a country so we can work out the tax.";
+        country.classList.add("bad"); ok=false;
+      } else { CM.$("#countryErr").textContent=""; country.classList.remove("bad"); }
+      if(!ok){ main.querySelector(".bad").focus(); return; }
+      step=3; render();
+    });
+  }
+
+  /* ---------------- step 3: payment ---------------- */
+  function luhn(num){
+    var s=num.replace(/\D/g,""), sum=0, alt=false;
+    if(s.length<12) return false;
+    for(var i=s.length-1;i>=0;i--){
+      var d=parseInt(s[i],10);
+      if(alt){ d*=2; if(d>9) d-=9; }
+      sum+=d; alt=!alt;
+    }
+    return sum%10===0;
+  }
+
+  function renderPayment(){
+    var t=CM.totals();
+    main.innerHTML='<div class="pagehead"><nav class="crumbs"><a href="index.html">Home</a><span>/</span>'+
+      '<a href="cart.html">Your bag</a><span>/</span><span aria-current="page">Payment</span></nav>'+
+      '<h1>Payment</h1></div>'+
+      stepsBar()+
+      '<div class="demo-banner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>'+
+        '<span><b>Demo store.</b> No payment is taken and nothing leaves your browser. '+
+        'Please don&rsquo;t type a real card — use the test number <b>4242 4242 4242 4242</b>, any future expiry and any CVC.</span></div>'+
+      '<div class="cartgrid"><div>'+
+        '<form id="payForm" novalidate>'+
+        '<div class="paymethods">'+
+          '<label class="paymethod'+(pay==="card"?" sel":"")+'"><input type="radio" name="pay" value="card"'+(pay==="card"?" checked":"")+'>'+
+            '<span><span class="pm-t">Card</span><span class="pm-s">Visa, Mastercard, Amex — charged in '+CM.currency()+'</span></span>'+
+            '<span class="pm-badge">Worldwide</span></label>'+
+          '<label class="paymethod'+(pay==="paypal"?" sel":"")+'"><input type="radio" name="pay" value="paypal"'+(pay==="paypal"?" checked":"")+'>'+
+            '<span><span class="pm-t">PayPal</span><span class="pm-s">You&rsquo;ll be redirected to approve the payment</span></span>'+
+            '<span class="pm-badge">200+ countries</span></label>'+
+          '<label class="paymethod'+(pay==="bank"?" sel":"")+'"><input type="radio" name="pay" value="bank"'+(pay==="bank"?" checked":"")+'>'+
+            '<span><span class="pm-t">Bank transfer</span><span class="pm-s">SEPA and international wire — files sent on clearing</span></span>'+
+            '<span class="pm-badge">EU · UK · GCC</span></label>'+
+        '</div>'+
+        '<div id="cardBox" class="card-fields"'+(pay==="card"?"":' hidden')+'>'+
+          '<div class="formgrid">'+
+            '<div class="field full"><label for="cnum">Card number</label>'+
+              '<input class="input" id="cnum" inputmode="numeric" autocomplete="off" placeholder="4242 4242 4242 4242" maxlength="23">'+
+              '<span class="err" id="cnumErr"></span></div>'+
+            '<div class="field"><label for="cexp">Expiry</label>'+
+              '<input class="input" id="cexp" inputmode="numeric" autocomplete="off" placeholder="MM / YY" maxlength="7">'+
+              '<span class="err" id="cexpErr"></span></div>'+
+            '<div class="field"><label for="ccvc">CVC</label>'+
+              '<input class="input" id="ccvc" inputmode="numeric" autocomplete="off" placeholder="123" maxlength="4">'+
+              '<span class="err" id="ccvcErr"></span></div>'+
+          '</div></div>'+
+        '<div style="display:flex;gap:12px;flex-wrap:wrap">'+
+          '<button class="btn btn-quiet" type="button" id="backDetails">Back</button>'+
+          '<button class="btn btn-primary btn-lg" type="submit" id="payBtn">Pay '+CM.money(t.total)+'</button>'+
+        '</div>'+
+        '<p style="font-size:12.5px;color:var(--faint);margin-top:18px">By paying you agree that the download begins immediately, '+
+          'which in the EU/UK waives the statutory withdrawal period — our own 14-day refund still applies.</p>'+
+        '</form>'+
+      '</div>'+
+      summaryBox(false)+
+      '</div>';
+
+    CM.$("#backDetails").addEventListener("click",function(){ step=2; render(); });
+
+    CM.$$('input[name="pay"]').forEach(function(r){
+      r.addEventListener("change",function(){
+        pay=this.value;
+        CM.$$(".paymethod").forEach(function(l){ l.classList.toggle("sel", l.contains(l.querySelector('input:checked'))); });
+        CM.$("#cardBox").hidden = pay!=="card";
+        CM.$("#payBtn").textContent = pay==="card" ? "Pay "+CM.money(CM.totals().total)
+          : (pay==="paypal" ? "Continue to PayPal" : "Get transfer details");
+      });
+    });
+
+    var cnum=CM.$("#cnum");
+    cnum.addEventListener("input",function(){
+      var v=this.value.replace(/\D/g,"").slice(0,19).replace(/(.{4})/g,"$1 ").trim();
+      this.value=v;
+    });
+    var cexp=CM.$("#cexp");
+    cexp.addEventListener("input",function(){
+      var v=this.value.replace(/\D/g,"").slice(0,4);
+      this.value = v.length>2 ? v.slice(0,2)+" / "+v.slice(2) : v;
+    });
+
+    CM.$("#payForm").addEventListener("submit",function(e){
+      e.preventDefault();
+      if(pay==="card"){
+        var ok=true;
+        if(!luhn(cnum.value)){ CM.$("#cnumErr").textContent="That card number doesn't look right."; cnum.classList.add("bad"); ok=false; }
+        else { CM.$("#cnumErr").textContent=""; cnum.classList.remove("bad"); }
+        var m=/^(\d{2})\s*\/\s*(\d{2})$/.exec(cexp.value.trim());
+        var valid=false;
+        if(m){
+          var mm=+m[1], yy=2000+ +m[2], now=new Date();
+          valid = mm>=1 && mm<=12 && new Date(yy, mm, 1) > now;
+        }
+        if(!valid){ CM.$("#cexpErr").textContent="Use a future MM / YY."; cexp.classList.add("bad"); ok=false; }
+        else { CM.$("#cexpErr").textContent=""; cexp.classList.remove("bad"); }
+        var cvc=CM.$("#ccvc");
+        if(!/^\d{3,4}$/.test(cvc.value.trim())){ CM.$("#ccvcErr").textContent="3 or 4 digits."; cvc.classList.add("bad"); ok=false; }
+        else { CM.$("#ccvcErr").textContent=""; cvc.classList.remove("bad"); }
+        if(!ok){ main.querySelector(".bad").focus(); return; }
+      }
+      var btn=CM.$("#payBtn");
+      btn.disabled=true; btn.textContent="Processing…";
+      setTimeout(function(){
+        order=CM.placeOrder({email:details.email, country:details.country});
+        step=4; render();
+      }, 900);
+    });
+  }
+
+  /* ---------------- step 4: confirmation ---------------- */
+  function renderDone(){
+    var books=order.items.map(CM.book).filter(Boolean);
+    main.innerHTML='<div class="confirm">'+
+      '<div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></div>'+
+      '<h1>Thank you — it&rsquo;s yours.</h1>'+
+      '<p style="color:var(--muted);max-width:46ch;margin:0 auto 8px">'+
+        'We&rsquo;ve sent the files to <b>'+CM.esc(order.email)+'</b>. They&rsquo;re also waiting in your library, '+
+        'and they&rsquo;ll stay there.</p>'+
+      '<p class="ordno">Order '+order.no+'</p>'+
+      '<div class="dl-list">'+books.map(function(b){
+        return '<div class="dl-item"><div class="dl-c">'+CM.coverHTML(b)+'</div>'+
+          '<div class="dl-t"><b>'+CM.esc(b.title)+'</b><span>EPUB · PDF · MOBI — DRM-free</span></div>'+
+          '<a class="btn btn-quiet btn-sm" href="read.html?id='+b.id+'">Read</a></div>';
+      }).join("")+'</div>'+
+      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px">'+
+        '<a class="btn btn-primary" href="library.html">Go to my library</a>'+
+        '<a class="btn btn-ghost" href="shop.html">Keep browsing</a></div>'+
+      '</div>';
+    CM.toast("Order "+order.no+" complete — enjoy the reading.");
+  }
+
+  function render(){
+    if(step===4 && order) renderDone();
+    else if(step===3) renderPayment();
+    else if(step===2) renderDetails();
+    else renderBag();
+    CM.reveal(main);
+    scrollTo({top:0,behavior:"smooth"});
+  }
+
+  render();
+  document.addEventListener("cm:cart",function(){ if(step<4) render(); });
+  document.addEventListener("cm:currency",function(){ if(step<4) render(); });
+});
+</script>
+</body>
+</html>
