@@ -6,7 +6,7 @@
  "layers": [
   {
    "name": "sky",
-   "file": "assets/layers/layer-sky.png",
+   "file": "assets/layers/layer-sky.webp",
    "left": 0.348,
    "top": 0.0,
    "width": 82.261,
@@ -21,7 +21,7 @@
   },
   {
    "name": "balloon",
-   "file": "assets/layers/layer-balloon.png",
+   "file": "assets/layers/layer-balloon.webp",
    "left": 84.261,
    "top": 7.66,
    "width": 10.522,
@@ -36,7 +36,7 @@
   },
   {
    "name": "rocket",
-   "file": "assets/layers/layer-rocket.png",
+   "file": "assets/layers/layer-rocket.webp",
    "left": 7.826,
    "top": 6.383,
    "width": 26.696,
@@ -51,7 +51,7 @@
   },
   {
    "name": "scene",
-   "file": "assets/layers/layer-scene.png",
+   "file": "assets/layers/layer-scene.webp",
    "left": 42.957,
    "top": 5.816,
    "width": 52.696,
@@ -66,7 +66,7 @@
   },
   {
    "name": "books",
-   "file": "assets/layers/layer-books.png",
+   "file": "assets/layers/layer-books.webp",
    "left": 31.304,
    "top": 22.553,
    "width": 28.522,
@@ -81,7 +81,7 @@
   },
   {
    "name": "lab",
-   "file": "assets/layers/layer-lab.png",
+   "file": "assets/layers/layer-lab.webp",
    "left": 2.609,
    "top": 34.468,
    "width": 29.478,
@@ -96,7 +96,7 @@
   },
   {
    "name": "bulb",
-   "file": "assets/layers/layer-bulb.png",
+   "file": "assets/layers/layer-bulb.webp",
    "left": 28.696,
    "top": 64.539,
    "width": 19.304,
@@ -111,7 +111,7 @@
   },
   {
    "name": "sparks",
-   "file": "assets/layers/layer-sparks.png",
+   "file": "assets/layers/layer-sparks.webp",
    "left": 0.0,
    "top": 36.879,
    "width": 100.0,

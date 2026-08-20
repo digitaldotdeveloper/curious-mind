@@ -114,7 +114,7 @@ CM.boot(function(){
       ? (list.length+(list.length===1?" book":" books")+(state.cat!=="All"?" in "+state.cat:"")+(state.q?' matching “'+state.q+'”':""))
       : "";
     if(!list.length){
-      emptySlot.innerHTML='<div class="empty"><img src="assets/logo.png" alt="">'+
+      emptySlot.innerHTML='<div class="empty"><img src="assets/logo.webp" alt="">'+
         '<h3>'+(state.view==="saved"?"Nothing saved yet":"No books match that")+'</h3>'+
         '<p>'+(state.view==="saved"
             ? "Tap the heart on any cover and it will wait for you here."

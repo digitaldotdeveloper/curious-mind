@@ -152,15 +152,31 @@ var ART = {
   arc:function(a,b){ var o=""; for(var i=0;i<5;i++) o+='<path d="M8 '+(180-i*6)+' A '+(42+i*6)+' '+(42+i*6)+' 0 0 1 92 '+(180-i*6)+'" fill="none" stroke="'+b+'" stroke-width="1.1" opacity="'+(.6-i*.09)+'"/>'; return o+'<circle cx="50" cy="150" r="6" fill="#fff" opacity=".5"/>'; }
 };
 
+/* A cover is a photographic/painted image when one has been generated into
+   assets/covers/<id>.png, and the drawn SVG cover otherwise. The <img> is
+   probed once per book; a missing file just leaves the drawn art in place. */
+var COVER_IMG = {};
 CM.coverHTML = function(b, opts){
   opts = opts||{};
   var art = (ART[b.art]||ART.orbit)(b.c[0], b.c[1]);
-  return '<div class="cover" style="background:linear-gradient(155deg,'+b.c[0]+','+b.c[1]+')">'+
+  return '<div class="cover'+(COVER_IMG[b.id]?" has-img":"")+'" data-cover="'+b.id+'" '+
+      'style="background:linear-gradient(155deg,'+b.c[0]+','+b.c[1]+')">'+
       '<svg class="art" viewBox="0 0 100 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+art+'</svg>'+
+      (COVER_IMG[b.id]!==false ? '<img class="coverimg" src="assets/covers/'+b.id+'.png" alt="" loading="lazy" decoding="async" onload="CM.coverOk(this)" onerror="CM.coverNo(this)">' : '')+
       '<span class="spine"></span><span class="gloss"></span>'+
       '<div class="ctx"><span class="by">'+esc(b.author)+'</span><h3>'+esc(b.title)+'</h3>'+
         '<span class="mark">Curious Mind</span></div>'+
     '</div>';
+};
+CM.coverOk = function(img){
+  var c=img.closest(".cover"); if(!c) return;
+  COVER_IMG[c.getAttribute("data-cover")]=true;
+  c.classList.add("has-img","img-in");
+};
+CM.coverNo = function(img){
+  var c=img.closest(".cover");
+  if(c) COVER_IMG[c.getAttribute("data-cover")]=false;
+  img.remove();
 };
 
 CM.stars = function(r){
@@ -240,7 +256,7 @@ CM.mountChrome = function(){
   header.innerHTML =
     '<div class="shell hbar">'+
       '<a class="brand" href="index.html">'+
-        '<img src="assets/logo.png" alt="" width="46">'+
+        '<img src="assets/logo.webp" alt="" width="46">'+
         '<span class="bn">Curious Mind<span class="bs">Ebook Store</span></span>'+
       '</a>'+
       '<nav class="mainnav" aria-label="Primary">'+
@@ -269,7 +285,7 @@ CM.mountChrome = function(){
   var footer = el("footer","site-footer");
   footer.innerHTML = '<div class="shell">'+
     '<div class="fgrid">'+
-      '<a class="brand" href="index.html"><img src="assets/logo.png" alt="" width="60">'+
+      '<a class="brand" href="index.html"><img src="assets/logo.webp" alt="" width="60">'+
         '<span class="bn">Curious Mind<span class="bs">Est. 2024</span></span></a>'+
       '<nav><b>Shop</b><a href="shop.html">Everything</a><a href="shop.html?cat=Essays">Essays</a>'+
         '<a href="shop.html?cat=Fiction">Fiction</a><a href="shop.html?view=saved">Saved</a></nav>'+
@@ -359,7 +375,15 @@ CM.scroll = (function(){
     [".marq",             "fade"],
     [".pagehead > *",     "up"],
     [".grid-tiles > *",   "rise"],
-    [".section > h2",     "up"]
+    [".section > h2",     "up"],
+    /* the reader: paragraphs fade in as you read — opacity only, so the text
+       never shifts under the eye mid-sentence */
+    [".chap h1",          "up"],
+    [".chap p",           "fade"],
+    [".chap .rule",       "fade"],
+    [".endcap",           "up"],
+    [".grid-books > *",   "rise"],
+    [".libgrid > *",      "rise"]
   ];
 
   function tag(root){
