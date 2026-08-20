@@ -26,15 +26,18 @@ no runtime dependency. Open `index.html` and everything works, checkout included
 | `assets/data.js` | 12 books incl. full chapter one, currencies, countries, promo codes |
 | `assets/app.js` | Shared engine — chrome, cart, library, currency, toasts, theme, scroll |
 | `assets/site.css` `pages.css` `hero.css` | **Sources you edit** |
-| `assets/curious.min.css` | **What the pages load** — built by `tools/build-css.py` |
+| `assets/curious.min.css` | **What the pages load** — built by `tools/build.py` |
 | `assets/layers/` | Slide 1 illustration, cut into 8 layers + manifest |
 | `assets/scenes/shelf/` `scenes/chapter/` | Slides 2 and 3, same treatment |
 | `assets/covers/*.webp` | The 12 book covers |
 | `assets/og.jpg` | 1200×630 link-share thumbnail |
 | `tools/` | Generation + image tooling. Not served. |
 
-**After editing any CSS source, run `py tools/build-css.py`** or the change will
-not reach the site. This is the one non-obvious step in the repo.
+**After editing any CSS or JS, run `py tools/build.py`.** It rebuilds the bundle
+and stamps `?v=<content hash>` onto the css/js links in every page. Without it
+the change either never reaches the site (CSS) or reaches it only after a
+browser's 10-minute cache expires — which is how a fixed layout can still look
+broken to the person who reported it. This is the one non-obvious step in the repo.
 
 ---
 
@@ -122,7 +125,7 @@ py   tools/segment-scene.py shelf   tools/.scenes-raw/shelf-2.png
 py   tools/segment-scene.py chapter tools/.scenes-raw/chapter-4.png
 
 py   tools/make-og.py                 # link thumbnail
-py   tools/build-css.py               # REQUIRED after any CSS edit
+py   tools/build.py                   # REQUIRED after any CSS or JS edit
 ```
 
 The studio token lives in `tools/.token` (gitignored) or `GEMINI_STUDIO_TOKEN`.
