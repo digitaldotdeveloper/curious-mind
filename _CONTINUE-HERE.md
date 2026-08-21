@@ -28,6 +28,7 @@ no runtime dependency. Open `index.html` and everything works, checkout included
 | `assets/site.css` `pages.css` `hero.css` | **Sources you edit** |
 | `assets/curious.min.css` | **What the pages load** — built by `tools/build.py` |
 | `assets/layers/` | Slide 1 illustration, cut into 8 layers + manifest |
+| `tools/cutout.py` | Keys the cream ground off a generated image as **one** cut-out — the single-object case of `segment-scene.py`, used for the slide 1 paper aeroplane |
 | `assets/scenes/shelf/` `scenes/chapter/` | Slides 2 and 3, same treatment |
 | `assets/covers/*.webp` | The 12 book covers |
 | `assets/og.jpg` | 1200×630 link-share thumbnail |
@@ -118,6 +119,10 @@ broken to the person who reported it. This is the one non-obvious step in the re
 # book covers
 node tools/generate-covers.mjs        # -> tools/.covers-raw
 py   tools/covers-to-webp.py          # -> assets/covers/*.webp
+
+# the slide 1 paper aeroplane (single object, not a scene)
+node tools/generate-plane.mjs 4     # -> tools/.plane-raw
+py   tools/cutout.py tools/.plane-raw/plane-3.png assets/layers/layer-plane.webp --box=52,18,330,440
 
 # hero scenes for slides 2 and 3
 node tools/generate-hero-scenes.mjs   # -> tools/.scenes-raw (2 variants each)
