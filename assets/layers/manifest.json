@@ -35,17 +35,17 @@
    "parts": 12
   },
   {
-   "name": "rocket",
-   "file": "assets/layers/layer-rocket.webp",
-   "left": 7.826,
-   "top": 6.383,
-   "width": 26.696,
-   "height": 56.596,
+   "name": "plane",
+   "file": "assets/layers/layer-plane.webp",
+   "left": 4.652,
+   "top": 2.553,
+   "width": 28.435,
+   "height": 62.411,
    "px": [
-    90,
-    45,
-    307,
-    399
+    54,
+    18,
+    327,
+    440
    ],
    "parts": 1
   },

@@ -11,3 +11,4 @@ tools/.token
 
 # raw generated scenes — the shipped layers are in assets/scenes
 tools/.scenes-raw/
+tools/.plane-raw/
